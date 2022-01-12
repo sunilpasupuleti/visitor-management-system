@@ -1,0 +1,191 @@
+<!--
+=========================================================
+* Argon Dashboard - v1.2.0
+=========================================================
+* Product Page: https://www.creative-tim.com/product/argon-dashboard
+
+
+* Copyright  Creative Tim (http://www.creative-tim.com)
+* Coded by www.creative-tim.com
+
+
+
+=========================================================
+* The above copyright notice and this permission notice shall be included in all copies or substantial portions of the Software.
+-->
+<!DOCTYPE html>
+<html>
+  <head>
+    <meta charset="utf-8" />
+    <meta
+      name="viewport"
+      content="width=device-width, initial-scale=1, shrink-to-fit=no"
+    />
+    <meta name="Notarised Docs" content="Notarised Docs" />
+    <meta name="Notarised Docs" content="Notarised Docs" />
+    <title>Visitors</title>
+    <link rel="stylesheet" href="../assets/css/fonts.css" />
+    <!-- Favicon -->
+    <link rel="icon" href="../assets/img/brand/favicon.png" type="image/png" />
+    <!-- Fonts -->
+
+    <!-- Icons -->
+    <link
+      rel="stylesheet"
+      href="../assets/vendor/nucleo/css/nucleo.css"
+      type="text/css"
+    />
+    <link
+      rel="stylesheet"
+      href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.15.2/css/all.min.css"
+      type="text/css"
+    />
+    <!-- Page plugins -->
+    <!-- Argon CSS -->
+    <link
+      rel="stylesheet"
+      href="../assets/css/argon.css?v=1.2.0"
+      type="text/css"
+    />
+    <link rel="stylesheet" href="css/loader.css" />
+    <link rel="stylesheet" href="css/animation.css" />
+    <link
+      rel="stylesheet"
+      href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.15.3/css/all.min.css
+    "
+    />
+    <link rel="stylesheet" href="../admin/js/chips/css/amsify.suggestags.css" />
+    <link rel="stylesheet" href="../admin/css/main.css" />
+  </head>
+
+  <body>
+    <div id="loader" class="center"></div>
+    <div class="main">
+      <!-- Main content -->
+      <div class="main-content" id="panel">
+        <div class="header"></div>
+        <!-- Page content -->
+        <div class="container-fluid mt-3" id="panel">
+          <div class="row card-header d-flex mx-2 my-2">
+            <div class="col-lg-3">
+              <p class="text-lg font-weight-bold pt-2">Visitors</p>
+            </div>
+            <div class="col-lg-6">
+              <div class="form-group">
+                <input
+                  id="searchValue"
+                  name="input-notary-name"
+                  class="form-control text-default"
+                  placeholder="Search by keywords... "
+                  type="search"
+                  oninput="searchFilter(event)"
+                />
+              </div>
+            </div>
+
+            <div class="col-md-12 mt-4">
+              <div class="table-flush">
+                <div class="table-responsive">
+                  <table class="table align-items-center" id="clients-table">
+                    <thead class="thead">
+                      <tr>
+                        <th><b class="text-dark">USER ID</b></th>
+                        <th>Selfie link</th>
+                        <th><b class="text-dark">Name</b></th>
+                        <th><b class="text-dark">Phone</b></th>
+                        <th><b class="text-dark">Total Meetings Done</b></th>
+                        <th><b class="text-dark">Address</b></th>
+                        <th><b class="text-dark">id Type / Proof</b></th>
+                        <br />
+                        <th class="invisible"></th>
+                      </tr>
+                    </thead>
+                    <tbody class="list visitors-list"></tbody>
+                  </table>
+
+                  <div class="pagination-buttons">
+                    <button
+                      class="btn btn-sm btn-primary"
+                      onclick="prev()"
+                      style="float: center; margin-left: 45%"
+                    >
+                      prev
+                    </button>
+                    <button
+                      class="btn btn-sm btn-primary"
+                      onclick="first()"
+                      style="float: center"
+                    >
+                      1
+                    </button>
+
+                    <button
+                      class="btn btn-sm btn-primary"
+                      onclick="next()"
+                      style="float: center"
+                    >
+                      next
+                    </button>
+                  </div>
+                </div>
+                <div class="card-footer py-4">
+                  <nav aria-label="...">
+                    <div
+                      class="pagination justify-content-center mb-0 page-buttons"
+                    ></div>
+                  </nav>
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+    <!-- Argon Scripts -->
+    <!-- Core -->
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/jquery/3.6.0/jquery.min.js"></script>
+    <script src="../assets/vendor/bootstrap/dist/js/bootstrap.bundle.min.js"></script>
+    <script src="../assets/vendor/js-cookie/js.cookie.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/jquery.scrollbar/0.2.11/jquery.scrollbar.min.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/jquery-scroll-lock@3.1.3/jquery-scrollLock.min.js"></script>
+
+    <!-- firebase -->
+    <script src="https://www.gstatic.com/firebasejs/8.2.9/firebase-app.js"></script>
+    <script src="https://www.gstatic.com/firebasejs/8.2.8/firebase-auth.js"></script>
+    <script src="https://www.gstatic.com/firebasejs/8.8.1/firebase-analytics.js"></script>
+    <script src="https://www.gstatic.com/firebasejs/8.2.9/firebase-messaging.js"></script>
+
+    <!-- firebase config end -->
+
+    <script
+      src="https://cdnjs.cloudflare.com/ajax/libs/moment.js/2.29.1/moment.min.js"
+      integrity="sha512-qTXRIMyZIFb8iQcfjXWCO8+M5Tbc38Qi5WzdPOYZHIlZpzBHG3L3by84BBBOiRGiEb7KKtAOAs5qYdUiZiQNNQ=="
+      crossorigin="anonymous"
+      referrerpolicy="no-referrer"
+    ></script>
+
+    <script src="../admin/js/chips/js/jquery.amsify.suggestags.js"></script>
+
+    <script src="../assets/js/argon.js?v=1.2.0"></script>
+    <script src="https://unpkg.com/sweetalert/dist/sweetalert.min.js"></script>
+    <script src="../config.js"></script>
+    <script src="js/loader.js"></script>
+    <script src="js/getNotification.js"></script>
+    <script src="js/master_links.js"></script>
+    <script src="js/visitors.js"></script>
+    <script src="js/set_departments.js"></script>
+
+    <script>
+      $(".user-profile-picture").attr(
+        "src",
+        localStorage.getItem("userImageURL")
+      );
+      let payload = getPayload();
+      $(".profile-username").html(`${payload.name}`);
+      $(".profile-picture").html(payload.name.charAt(0));
+    </script>
+    <script>
+      addNav("visitor");
+    </script>
+  </body>
+</html>

@@ -1,0 +1,122 @@
+.order-status-label i {
+    height: 25px;
+    width: 25px;
+    border-radius: 100%;
+    padding-top: 4px;
+    display: inline-block;
+    position: relative;
+    transition: background-color 500ms;
+    border: 2px solid #fde50e;
+    color: #fde50e;
+}
+
+.order-status-label i.completed {
+    color: white;
+    background-color: #fde50e;
+}
+
+.order-status-label:not(:last-child) i.completed::after {
+    content: '';
+    position: absolute;
+    width: 250px;
+    height: 2px;
+    left: 20px;
+    bottom: 10px;
+    background-color: #fde50e;
+}
+
+.order-bar-time {
+    width: 170px;
+}
+
+@media screen and (max-width: 1300px) {
+    .order-status-label:not(:last-child) i.completed::after {
+        width: 200px;
+        left: 60px;
+    }
+}
+
+@media screen and (min-width: 1000px) {
+    .order-status-label:not(:last-child) i.completed::after {
+        width: 140px;
+        left: 30px;
+    }
+}
+
+@media screen and (min-width: 800px) and (max-width: 999px) {
+    .order-status-label:not(:last-child) i.completed::after {
+        width: 120px;
+        left: 30px;
+    }
+    .order-bar-time {
+        width: 140px;
+    }
+    .order-status-label:not(:last-child) i::before {
+        width: 120px;
+        left: 30px;
+    }
+}
+
+@media screen and (min-width: 600px) and (max-width:799px) {
+    .order-status-label:not(:last-child) i.completed::after {
+        width: 90px;
+        left: 30px;
+    }
+    .order-status-label:not(:last-child) i::before {
+        width: 90px;
+        left: 30px;
+    }
+    .order-bar-time {
+        width: 110px;
+    }
+}
+
+@media screen and (max-width:600px) {
+    .order-status-bar {
+        padding-left: 100px;
+        flex-direction: column;
+    }
+    .order-status-text {
+        position: relative;
+        right: -20px;
+        width: 100px;
+        bottom: 25px;
+    }
+    .order-bar-time {
+        position: relative;
+        bottom: 20px;
+    }
+    .order-status-label:not(:last-child) i.completed::after {
+        transform: rotate(90deg);
+        top: 80px;
+        left: -40px;
+        width: 100px;
+    }
+    .order-status-label:not(:last-child) i::before {
+        transform: rotate(90deg);
+        top: 45px;
+        left: -5px;
+        width: 600px;
+    }
+}
+
+.btn-primary {
+    color: #fff;
+    border-color: #051c91;
+    background-color: #051c91;
+    box-shadow: 0 4px 6px rgba(50, 50, 93, 0.11), 0 1px 3px rgba(0, 0, 0, 0.08);
+}
+
+.back-arrow {
+    width: 30px;
+    height: 40px;
+    margin-right: 4px;
+    border-radius: 100%;
+    padding: 5px 1px;
+    background-color: #71EFA3;
+    display: inline;
+}
+
+.back-arrow:hover {
+    cursor: pointer;
+}

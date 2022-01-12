@@ -1,0 +1,647 @@
+<!--
+=========================================================
+* Argon Dashboard - v1.2.0
+=========================================================
+* Product Page: https://www.creative-tim.com/product/argon-dashboard
+
+
+* Copyright  Creative Tim (http://www.creative-tim.com)
+* Coded by www.creative-tim.com
+
+
+
+=========================================================
+* The above copyright notice and this permission notice shall be included in all copies or substantial portions of the Software.
+-->
+<!DOCTYPE html>
+<html>
+  <head>
+    <meta charset="utf-8" />
+    <meta
+      name="viewport"
+      content="width=device-width, initial-scale=1, shrink-to-fit=no"
+    />
+    <meta name="Notarised Docs" content="Notarised Docs" />
+    <meta name="Notarised Docs" content="Notarised Docs" />
+    <title>Visitor Info</title>
+    <link rel="stylesheet" href="../assets/css/fonts.css" />
+    <!-- Favicon -->
+    <link rel="icon" href="../assets/img/brand/favicon.png" type="image/png" />
+    <!-- Fonts -->
+
+    <!-- Icons -->
+    <link
+      rel="stylesheet"
+      href="../assets/vendor/nucleo/css/nucleo.css"
+      type="text/css"
+    />
+    <link
+      rel="stylesheet"
+      href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.15.2/css/all.min.css"
+      type="text/css"
+    />
+    <!-- Page plugins -->
+    <!-- Argon CSS -->
+    <link
+      rel="stylesheet"
+      href="../assets/css/argon.css?v=1.2.0"
+      type="text/css"
+    />
+    <link rel="stylesheet" href="css/loader.css" />
+    <link rel="stylesheet" href="css/animation.css" />
+    <link
+      rel="stylesheet"
+      href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.15.3/css/all.min.css
+    "
+    />
+    <link rel="stylesheet" href="../admin/js/chips/css/amsify.suggestags.css" />
+
+    <link rel="stylesheet" href="css/main.css" />
+
+    <style>
+      tr:hover {
+        background-color: rgba(0, 0, 0, 0.05);
+        cursor: pointer;
+      }
+    </style>
+  </head>
+
+  <body>
+    <div id="loader" class="center"></div>
+
+    <div class="main">
+      <!-- Main content -->
+      <div class="main-content" id="panel">
+        <div class="header"></div>
+
+        <!-- Page content -->
+        <div class="container-fluid mt-3" id="panel">
+          <div class="col-md-6">
+            <canvas
+              id="stackedChart"
+              style="width: 500px; height: 400px; object-fit: contain"
+            ></canvas>
+          </div>
+
+          <div class="mt-5 row mb-3">
+            <div class="col-xl-6 header-title">
+              <b id="userName" class="text-dark text-xl">Visitor Details</b>
+            </div>
+          </div>
+
+          <div id="content" class="card p-3">
+            <hr />
+            <div class="row">
+              <div id="profile" class="col-xl-12">
+                <div class="card-body">
+                  <br />
+                  <div class="pl-lg-4">
+                    <div class="row">
+                      <div class="col-lg-6">
+                        <div class="form-group">
+                          <label class="form-control-label" for="name"
+                            >Name</label
+                          >
+                          <input
+                            type="text"
+                            id="name"
+                            class="form-control font-weight-bold"
+                            placeholder="Name"
+                            value=""
+                            required
+                            disabled
+                          />
+                        </div>
+                      </div>
+                      <div class="col-lg-6">
+                        <div class="form-group">
+                          <label class="form-control-label" for="phone"
+                            >Phone Number</label
+                          >
+                          <input
+                            type="text"
+                            id="phone"
+                            class="form-control font-weight-bold"
+                            placeholder=""
+                            value=""
+                            required
+                            disabled
+                          />
+                        </div>
+                      </div>
+                    </div>
+                    <div class="row">
+                      <div class="col-lg-6">
+                        <div class="form-group">
+                          <label class="form-control-label" for="company"
+                            >Company</label
+                          >
+                          <input
+                            type="email"
+                            id="company"
+                            class="form-control font-weight-bold"
+                            value=""
+                            required
+                            disabled
+                          />
+                        </div>
+                      </div>
+
+                      <div class="col-lg-6">
+                        <div class="form-group">
+                          <label class="form-control-label"
+                            >Visitor Added On</label
+                          >
+                          <input
+                            type="text"
+                            id="addedon"
+                            class="form-control font-weight-bold"
+                            value=""
+                            disabled
+                          />
+                        </div>
+                      </div>
+
+                      <div class="col-md-12">
+                        <div class="form-group">
+                          <label class="form-control-label" for="address"
+                            >Address</label
+                          >
+                          <input
+                            id="address"
+                            class="form-control font-weight-bold"
+                            value=""
+                            type="text"
+                            required
+                            disabled
+                          />
+                        </div>
+                      </div>
+
+                      <div class="col-lg-6">
+                        <div class="form-group">
+                          <label class="form-control-label"
+                            >Total Meetings Done</label
+                          >
+                          <input
+                            type="number"
+                            id="total-meetings-done"
+                            class="form-control font-weight-bold"
+                            value=""
+                            disabled
+                          />
+                        </div>
+                      </div>
+
+                      <div class="col-lg-12 links">
+                        <a href="#" id="idLink">
+                          <span id="idType">asd</span>
+                        </a>
+                        <a href="#" id="selfieLink">
+                          <span>Selfie Link</span>
+                        </a>
+                      </div>
+                    </div>
+                    <div class="row"></div>
+                  </div>
+                </div>
+              </div>
+            </div>
+          </div>
+
+          <div class="mt-3 date-picker">
+            <div class="form-group">
+              <label for="">From </label>
+              <input min="" type="date" id="from_date" class="form-control" />
+            </div>
+            <div class="form-group ml-3">
+              <label for="">To </label>
+              <input type="date" id="to_date" class="form-control" />
+            </div>
+
+            <button class="btn data-btn" id="to_date" onclick="rangeData()">
+              Submit
+            </button>
+          </div>
+
+          <div class="row" id="details-section">
+            <!-- current data -->
+            <div class="col-xl-6 completed-meetings-tab">
+              <div class="card bg-white" style="min-height: 300px">
+                <div class="card-header bg-transparent">
+                  <div class="row align-items-center">
+                    <div class="col-xl-12">
+                      <h4 class="text-Black ls-1 mb-1">Analysed Data</h4>
+                    </div>
+                  </div>
+                </div>
+                <div
+                  class="card-body details details-card-body"
+                  id="details-card"
+                >
+                  <!-- Chart -->
+                  <div class="row">
+                    <div class="col-md-7">
+                      <div class="grid">
+                        <p>Total Meetings Done :</p>
+                        <span id="total-meetings-done-details-card"></span>
+                      </div>
+
+                      <div class="grid">
+                        <p>Total Rejected Meetings :</p>
+                        <span id="total-rejected-meetings"></span>
+                      </div>
+
+                      <div class="grid">
+                        <p>Total Rescheduled Meetings :</p>
+                        <span id="total-rescheduled-meetings"></span>
+                      </div>
+
+                      <div class="grid">
+                        <p>Current Meetings On Site :</p>
+                        <span id="current-meetings-on-site"></span>
+                      </div>
+
+                      <div class="grid">
+                        <p>Today Upcoming Meetings :</p>
+                        <span id="today-upcoming-meetings"></span>
+                      </div>
+                    </div>
+
+                    <div class="col-md-5">
+                      <canvas
+                        id="analysedChart"
+                        style="width: 100%; height: 300px; object-fit: contain"
+                      ></canvas>
+                    </div>
+                  </div>
+                </div>
+              </div>
+            </div>
+
+            <div class="col-xl-6 completed-meetings-tab">
+              <div class="card bg-white" style="min-height: 300px">
+                <div class="card-header bg-transparent">
+                  <div class="row align-items-center">
+                    <div class="col-xl-12">
+                      <h4 class="text-Black ls-1 mb-1">Completed Meetings</h4>
+                    </div>
+                    <div class="col-xl-12 mt-2">
+                      <ul class="nav nav-pills justify-content-start">
+                        <li class="nav-item">
+                          <a
+                            style="cursor: pointer"
+                            name="T-meetings"
+                            class="nav-link orders-tab py-2 px-3 active"
+                            onclick="displayMeetings(this)"
+                            data-toggle="tab"
+                          >
+                            <span class="d-none d-md-block">Today</span>
+                            <span class="d-md-none">T</span>
+                          </a>
+                        </li>
+                        <li class="nav-item mr-2 mr-md-0">
+                          <a
+                            style="cursor: pointer"
+                            name="W-meetings"
+                            class="nav-link orders-tab py-2 px-3"
+                            onclick="displayMeetings(this)"
+                            data-toggle="tab"
+                          >
+                            <span class="d-none d-md-block">This Week</span>
+                            <span class="d-md-none">W</span>
+                          </a>
+                        </li>
+                        <li class="nav-item">
+                          <a
+                            style="cursor: pointer"
+                            name="M-meetings"
+                            class="nav-link orders-tab py-2 px-3"
+                            data-toggle="tab"
+                            onclick="displayMeetings(this)"
+                          >
+                            <span class="d-none d-md-block">This Month</span>
+                            <span class="d-md-none">M</span>
+                          </a>
+                        </li>
+
+                        <li class="nav-item">
+                          <a
+                            style="cursor: pointer"
+                            name="Y-meetings"
+                            class="nav-link orders-tab py-2 px-3"
+                            data-toggle="tab"
+                            onclick="displayMeetings(this)"
+                          >
+                            <span class="d-none d-md-block">This Year</span>
+                            <span class="d-md-none">Y</span>
+                          </a>
+                        </li>
+                      </ul>
+                    </div>
+                  </div>
+                </div>
+
+                <div class="row">
+                  <div class="col-md-4">
+                    <div
+                      class="card-body meetings meeting-card-body"
+                      id="T-meetings"
+                    >
+                      <!-- Chart -->
+
+                      <div class="">
+                        <p>
+                          Meetings Done :<span id="T-completed-meetings"></span>
+                        </p>
+                      </div>
+                    </div>
+                    <div
+                      class="card-body meetings meeting-card-body"
+                      style="display: none"
+                      id="W-meetings"
+                    >
+                      <!-- Chart -->
+
+                      <div>
+                        <p>
+                          Meetings Done :<span id="W-completed-meetings"></span>
+                        </p>
+                      </div>
+                    </div>
+                    <div
+                      class="card-body meetings meeting-card-body"
+                      style="display: none"
+                      id="M-meetings"
+                    >
+                      <!-- Chart -->
+
+                      <div>
+                        <p>
+                          Meetings Done:<span id="M-completed-meetings"></span>
+                        </p>
+                      </div>
+                    </div>
+
+                    <div
+                      class="card-body meetings meeting-card-body"
+                      style="display: none"
+                      id="Y-meetings"
+                    >
+                      <div>
+                        <p>
+                          Meetings Done :<span id="Y-completed-meetings"></span>
+                        </p>
+                      </div>
+                    </div>
+                  </div>
+
+                  <div class="col-md-8">
+                    <canvas
+                      id="dashboardCompletedChart"
+                      style="width: 100%; height: 300px; object-fit: contain"
+                    ></canvas>
+                  </div>
+                </div>
+              </div>
+            </div>
+          </div>
+
+          <div class="meetings-section" id="meetings-section">
+            <p class="text-lg font-weight-bold pt-2">Meetings</p>
+          </div>
+
+          <div class="filters">
+            <div class="form-group">
+              <input
+                style="border-color: #5e72c4"
+                id="meetingSearchText"
+                oninput="searchFilter(event)"
+                name="meetingSearchText"
+                class="form-control text-default"
+                placeholder="Search by meeting"
+                type="search"
+              />
+            </div>
+
+            <div class="flex">
+              <div class="form-group">
+                <select
+                  class="form-control"
+                  name="employee-name"
+                  id="employee-name"
+                  onchange="sortByFilter()"
+                  required
+                >
+                  <option value="" selected>Sort by employee</option>
+                  <option value="default">Default</option>
+
+                  <!-- append from javascript departments fetch from backedn -->
+                </select>
+              </div>
+
+              <div class="form-group">
+                <select
+                  class="form-control"
+                  name="status"
+                  id="status"
+                  onchange="sortByFilter()"
+                  required
+                >
+                  <option value="" selected>Sort by status</option>
+                  <option value="inprogress">In Progress</option>
+                  <option value="completed">Completed</option>
+                  <option value="rejected">Rejected</option>
+                  <option value="upcoming">Upcoming</option>
+                  <option value="rescheduled">Rescheduled</option>
+                  <option value="nothing">Nothing</option>
+
+                  <!-- append from javascript departments fetch from backedn -->
+                </select>
+              </div>
+            </div>
+          </div>
+
+          <div id="current-meetings" class="col-xl-12">
+            <div class="row">
+              <div class="col" id="current-meetings-table">
+                <div class="card table-flush">
+                  <div class="table-responsive">
+                    <table class="table align-items-center" id="meetings-table">
+                      <thead class="thead">
+                        <tr>
+                          <th><b class="text-dark">ID</b></th>
+                          <th><b class="text-dark">Visitor</b></th>
+                          <th><b class="text-dark">Employee</b></th>
+                          <th><b class="text-dark">Status</b></th>
+                          <th><b class="text-dark">Purpose</b></th>
+                          <th><b class="text-dark">Vehicle No</b></th>
+                          <th><b class="text-dark">Raised Time</b></th>
+                          <th><b class="text-dark">Accepted Time</b></th>
+                          <th><b class="text-dark">Rejected Time</b></th>
+                          <th><b class="text-dark">Rescheduled Time</b></th>
+                          <th><b class="text-dark">End Time</b></th>
+                        </tr>
+                      </thead>
+                      <tbody class="list meetings-list"></tbody>
+                    </table>
+                  </div>
+                  <div class="card-footer py-4">
+                    <nav aria-label="...">
+                      <div
+                        class="pagination justify-content-center mb-0 page-buttons"
+                      ></div>
+                    </nav>
+                  </div>
+                </div>
+              </div>
+            </div>
+          </div>
+
+          <!-- <div class="col-md-6">
+          <canvas
+            id="stackedChart"
+            style="width: 100%; height: 900px; object-fit: contain"
+          ></canvas>
+        </div> -->
+        </div>
+
+        <!-- details Modal -->
+        <div class="modal fade" id="meetingDetailsModal">
+          <div class="modal-dialog">
+            <div class="modal-content">
+              <!-- Modal Header -->
+              <div class="modal-header">
+                <h4 class="modal-title">Meeting Information</h4>
+              </div>
+
+              <!-- Modal body -->
+              <div class="modal-body">
+                <div class="row">
+                  <div class="col-lg-12">
+                    <div class="grid">
+                      <h3>Meeting Id :</h3>
+                      <h3 class="text-muted mid"></h3>
+                    </div>
+                    <div class="grid">
+                      <h3>Status :</h3>
+                      <a href="#" class="mstatus"></a>
+                    </div>
+                    <div class="grid">
+                      <h3>Visitor name :</h3>
+                      <a href="#" class="vname"></a>
+                    </div>
+                    <div class="grid">
+                      <h3>Employee name :</h3>
+                      <a href="#" class="ename"></a>
+                    </div>
+                    <div class="grid">
+                      <h3>Meeting Raised Time :</h3>
+                      <h3 class="text-muted mrt"></h3>
+                    </div>
+                    <div class="grid">
+                      <h3>Meeting Accepted Time :</h3>
+                      <h3 class="text-muted mat"></h3>
+                    </div>
+                    <div class="grid">
+                      <h3>Meeting Rejected Time :</h3>
+                      <h3 class="text-muted mrejt"></h3>
+                    </div>
+                    <div class="grid">
+                      <h3>Meeting Rescheduled Time :</h3>
+                      <h3 class="text-muted mrest"></h3>
+                    </div>
+                    <div class="grid">
+                      <h3>Meeting End Time :</h3>
+                      <h3 class="text-muted met"></h3>
+                    </div>
+                    <div class="grid">
+                      <h3>Accepted :</h3>
+                      <h3 class="text-muted acc"></h3>
+                    </div>
+                    <div class="grid">
+                      <h3>Rescheduled :</h3>
+                      <h3 class="text-muted res"></h3>
+                    </div>
+                    <div class="grid">
+                      <h3>Other Belongings :</h3>
+                      <h3 class="text-muted bel"></h3>
+                    </div>
+                    <div class="additional-members">
+                      <h3>Additional Members :</h3>
+                      <ul></ul>
+                    </div>
+
+                    <div class="">
+                      <h3>Meeting Minutes notes :</h3>
+                      <h3 class="text-muted mnotes"></h3>
+                    </div>
+                  </div>
+                </div>
+              </div>
+
+              <!-- Modal footer -->
+              <div class="modal-footer">
+                <button
+                  type="button"
+                  class="btn btn-secondary"
+                  data-dismiss="modal"
+                >
+                  Close
+                </button>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+    <!-- Argon Scripts -->
+    <!-- Core -->
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/jquery/3.6.0/jquery.min.js"></script>
+    <script src="../assets/vendor/bootstrap/dist/js/bootstrap.bundle.min.js"></script>
+    <script src="../assets/vendor/js-cookie/js.cookie.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/jquery.scrollbar/0.2.11/jquery.scrollbar.min.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/jquery-scroll-lock@3.1.3/jquery-scrollLock.min.js"></script>
+
+    <!-- firebase -->
+    <script src="https://www.gstatic.com/firebasejs/8.2.9/firebase-app.js"></script>
+    <script src="https://www.gstatic.com/firebasejs/8.2.8/firebase-auth.js"></script>
+    <script src="https://www.gstatic.com/firebasejs/8.8.1/firebase-analytics.js"></script>
+    <script src="https://www.gstatic.com/firebasejs/8.2.9/firebase-messaging.js"></script>
+
+    <!-- firebase config end -->
+
+    <script
+      src="https://cdnjs.cloudflare.com/ajax/libs/moment.js/2.29.1/moment.min.js"
+      integrity="sha512-qTXRIMyZIFb8iQcfjXWCO8+M5Tbc38Qi5WzdPOYZHIlZpzBHG3L3by84BBBOiRGiEb7KKtAOAs5qYdUiZiQNNQ=="
+      crossorigin="anonymous"
+      referrerpolicy="no-referrer"
+    ></script>
+
+    <script src="../admin/js/chips/js/jquery.amsify.suggestags.js"></script>
+
+    <script src="../assets/js/argon.js?v=1.2.0"></script>
+    <script src="https://cdn.jsdelivr.net/npm/chart.js@3.6.0/dist/chart.min.js"></script>
+
+    <script src="https://unpkg.com/sweetalert/dist/sweetalert.min.js"></script>
+    <script src="../config.js"></script>
+    <script src="js/loader.js"></script>
+    <script src="js/getNotification.js"></script>
+    <script src="js/master_links.js"></script>
+    <script src="js/visitor_profile.js"></script>
+    <script src="js/set_departments.js"></script>
+
+    <script>
+      $(".user-profile-picture").attr(
+        "src",
+        localStorage.getItem("userImageURL")
+      );
+      let payload = getPayload();
+      $(".profile-username").html(`${payload.name}`);
+      $(".profile-picture").html(payload.name.charAt(0));
+    </script>
+    <script>
+      addNav("visitor");
+    </script>
+  </body>
+</html>

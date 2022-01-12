@@ -1,0 +1,12 @@
+{
+  "type": "service_account",
+  "project_id": "vistor-management-app",
+  "private_key_id": "6e87e4e0e95883279bcd6e3efbcd492289901a76",
+  "private_key": "-----BEGIN PRIVATE KEY-----\nMIIEvQIBADANBgkqhkiG9w0BAQEFAASCBKcwggSjAgEAAoIBAQDYYJWCbBErZP9w\n0ESwgiYiTv9voVwVnBNKcorL8kb6uWHxAyCMJQjp588fUwSJqlfS+kW0gZ/dsl6s\np7+OaSc0U5oxommqlGGaBgLMq3YRoI0M17IEwZ52IYt9hxf3/y2utWlNJ35wqeJq\nnjOUwpXQ93lp9ZrrynlDUsIAb6myFzTKYRIW6cRDiR3GhtoZqT0kUhkY6aAcazVy\nnzVbNNnm1CGMOx5Do/HeMdBAj8KDEZOs0PWEkMlJjVm+e/AbiJxztv69Qzbcr1zI\nyxcK4kLo612MKK4W8baC/fGBkNpjvfLlrgauIULx4BLfm+AcxRUvr+fA9TPdI0A4\nqzxaHQ7bAgMBAAECggEAGAVU47cyisI6F2CPl5bDPADQG6jqq515iMTBgtWhKplk\n9ZgWx2gfHrR0ynHxaYUHHe1ZyqmvQTHZj8pJmjozN3xmfEce+uhhE3PCYM1SHK/Z\nqMjTQvLpsAyWSzexof7qp+AM0htlzoUVlSd963BUqG+ow2oYKj/+iUpJLjo3OQVl\nODNEfA0euwkFR+9yDXj+yKQLcQ4nEKQ5znqIYMY/yAabP58Jkj7mx1jbUp/W8SvR\nSifZSE18A0GrRyUVJMVuuACP5XBzMb+SCQOfuWJX+5ZAZF82JjxgKc9c7BtG++UV\n9m+PxNTC7FBL0cglYICIXx2Wp94C7957dt4Yl1GpjQKBgQDyQsmSwMV8vUFXs2cg\ngMn0rLuFezPEuRZDOvJSrFIn/Dun1Oinj87dQLhfwTGIzasnK98RdXqA+1oRPZzZ\nCRIH225czs4RW+wlriB4ILdmLJYruIzIGw0SQ7JDXXlZakjE/jKUIx8mbbeVksFO\nI+73Pi6Ror0hl0xor4Oqq+5wvQKBgQDkpgLT3G15pHGreaZQaOTDXn0Uv09sssFb\nnJia/0zMVPN1U83tN/D7jbS9joudIL7HWzzSp2H+LSvbjgA+Su9b11iF2j+R+esS\nWUsCqxxVuikbSQXhLs6nTUyIvRx6wglR4bp1m6aDAxqIhaDpUUfzNDzsk9MFu6WR\nqRWSlKUzdwKBgQDKJVqHXt0rCcxlPqiVoYFi7WMHrVb0FrDx5lTfETT4cmrgzzJW\n5xNo4SE3nUAU8/CVnfDjY5CV4aY07qFbJEtsTPgY7uNZ7sbsZhBnzHzb/+ZKkxK9\nwny0udIcjfm814fjAGz52Rib+z8NysgLyMYUfkljclS4m8PBMnr+RbqPTQKBgGgD\nUSP5kV+VvBPqagsIPJDXigUHJmVnR+iZ6x4PZ2tIddv4vKPeH+T/SKo2jzJyc/cS\nfS/C7yQGfn4JMfkkc5CO/PkfGG4ah6I4NpRHLMOexRZheKhAd8fJtTg69xqs7Dpw\nejcIEI5mugpC57lbvWRYbiKc+JESFLaXeXXN4vzvAoGAAYC9Kr7lPoGM4jMJsmFt\nSpsI3MZMkKQe3F6C9wmK41KvjdppJnV6VxAyg/CytwylXDWHbd1HqQ+EubBeMIrx\nCZRJuLq5qBfvQ/AkZSRCwBRBxnwf2hcgE8Vc1mFQkZKr9+lsImBgxQZbIBettfki\n3z0A+iFppy3VIbqygIJvD/I=\n-----END PRIVATE KEY-----\n",
+  "client_email": "firebase-adminsdk-h5nv5@vistor-management-app.iam.gserviceaccount.com",
+  "client_id": "100730300037545713136",
+  "auth_uri": "https://accounts.google.com/o/oauth2/auth",
+  "token_uri": "https://oauth2.googleapis.com/token",
+  "auth_provider_x509_cert_url": "https://www.googleapis.com/oauth2/v1/certs",
+  "client_x509_cert_url": "https://www.googleapis.com/robot/v1/metadata/x509/firebase-adminsdk-h5nv5%40vistor-management-app.iam.gserviceaccount.com"
+}

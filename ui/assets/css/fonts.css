@@ -1,0 +1,8 @@
+@font-face {
+  font-family: whitney;
+  src: url("../fonts/Whitney-Book.otf") format("opentype");
+}
+
+html {
+  font-family: whitney;
+}
