@@ -12,7 +12,7 @@ const employeeSchema = mongoose.Schema(
     department: { type: String },
     fcmToken: { type: String },
     status: { type: String },
-    title: { type: String },
+    designation: { type: String },
     totalMeetingsDone: { type: Number, default: 0 },
     employeeAdeedOn: { type: Date, default: new Date() },
     isOnVacationMode: { type: Boolean, default: false },

@@ -36,6 +36,33 @@ async function editMeetings(body, compId) {
 
 const firebaseAdmin = require("firebase-admin");
 module.exports = {
+  async saveFcmToken(req, res) {
+    const { uid } = req.body;
+    if (!uid) {
+      console.log("nothing");
+      res.status(httpstatus.CONFLICT).json({ message: "All fields required" });
+      return;
+    }
+
+    if (req.body.fcmToken) {
+      await Employee.updateOne(
+        { uid: uid },
+        {
+          $set: {
+            fcmToken: req.body.fcmToken,
+          },
+        }
+      );
+      return res.status(httpstatus.OK).json({
+        message: "Updated fcm token : ",
+      });
+    } else {
+      return res.status(httpstatus.CONFLICT).json({
+        message: "Please provide fcm token : ",
+      });
+    }
+  },
+
   async getEmployees(req, res) {
     await Employee.find({
       company: req.user.company._id,
@@ -58,7 +85,53 @@ module.exports = {
       .then((result) => {
         res.status(httpstatus.OK).json({
           message: "All visitors : ",
-          employees: result,
+          visitors: result,
+        });
+      })
+      .catch((err) => {
+        res.status(httpstatus.INTERNAL_SERVER_ERROR).json({ message: err });
+      });
+  },
+
+  async getVisitorData(req, res) {
+    let visitorId = req.query.visitorId.toString();
+    let employeeId = req.user._id.toString();
+
+    if (!visitorId || !employeeId) {
+      return res
+        .status(httpstatus.CONFLICT)
+        .json({ message: "No visitor or employee Id provided" });
+    }
+    let completedMeetings = [];
+    let rejectedMeetings = [];
+    let rescheduledMeetings = [];
+    const details = async () => {
+      completedMeetings = await Meeting.find({
+        "employee._id": employeeId,
+        "visitor._id": visitorId,
+        status: "completed",
+      });
+
+      rejectedMeetings = await Meeting.find({
+        "employee._id": employeeId,
+        "visitor._id": visitorId,
+        status: "rejected",
+      });
+
+      rescheduledMeetings = await Meeting.find({
+        "employee._id": employeeId,
+        "visitor._id": visitorId,
+        status: "reschedule",
+      });
+    };
+
+    details()
+      .then((result) => {
+        res.status(httpstatus.OK).json({
+          message: "Visitor data : ",
+          completedMeetings,
+          rescheduledMeetings,
+          rejectedMeetings,
         });
       })
       .catch((err) => {
@@ -129,16 +202,86 @@ module.exports = {
       });
   },
 
+  async getHomePage(req, res) {
+    let requestMeetings = [];
+    let todayCompletedMeetings = [];
+    let inProgressMeetings = [];
+    let empId = req.user._id.toString();
+    const details = async () => {
+      await Meeting.find({
+        "employee._id": empId,
+        status: "upcoming",
+      }).then((data) => {
+        requestMeetings = data;
+      });
+
+      await Meeting.find({
+        "employee._id": empId,
+        status: "accepted",
+      }).then((data) => {
+        inProgressMeetings = data;
+      });
+
+      const totMeetDoneToday = await Meeting.aggregate([
+        {
+          $match: {
+            "employee._id": empId,
+            status: "completed",
+            $expr: {
+              $and: [
+                {
+                  $eq: [
+                    { $dayOfMonth: "$meetingEndTime" },
+                    { $dayOfMonth: new Date() },
+                  ],
+                },
+                {
+                  $eq: [{ $month: "$meetingEndTime" }, { $month: new Date() }],
+                },
+                {
+                  $eq: [{ $year: "$meetingEndTime" }, { $year: new Date() }],
+                },
+              ],
+            },
+          },
+        },
+      ]);
+
+      todayCompletedMeetings = totMeetDoneToday;
+    };
+
+    details()
+      .then(() => {
+        res.status(httpstatus.OK).json({
+          message: "Home page data : ",
+          requestMeetings,
+          todayCompletedMeetings,
+          inProgressMeetings,
+        });
+      })
+      .catch((err) => {
+        res.status(httpstatus.INTERNAL_SERVER_ERROR).json({ message: err });
+      });
+  },
+
   async addEmployee(req, res) {
-    const { name, phone, email, department, title, uid, password, image } =
-      req.body;
+    const {
+      name,
+      phone,
+      email,
+      department,
+      designation,
+      uid,
+      password,
+      image,
+    } = req.body;
 
     if (
       !name ||
       !phone ||
       !email ||
       !department ||
-      !title ||
+      !designation ||
       !password ||
       !image
     ) {
@@ -154,7 +297,7 @@ module.exports = {
       email: helper.lowercase(email),
       department,
       image,
-      title: helper.capitalize(title),
+      designation: helper.capitalize(title),
       company: req.user.company._id,
     };
 
@@ -351,6 +494,7 @@ module.exports = {
   },
 
   async updateVacationMode(req, res) {
+    console.log(req.user._id);
     let mode = req.query.mode;
     if (mode !== "on" && mode !== "off") {
       return res.status(httpstatus.OK).json({
@@ -369,7 +513,7 @@ module.exports = {
 
     await Employee.updateOne(
       {
-        _id: req.query._id,
+        _id: req.user._id,
       },
       {
         $set: {

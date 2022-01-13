@@ -268,6 +268,8 @@ function returnVariables(m) {
     status: m.status,
     visitor: m.visitor,
     employee: m.employee,
+    rejectedReasons: m.rejectedReasons,
+
     purpose: m.purpose,
     vehicleNumber: m.vehicleNumber,
     meetingRaisedTime: m.meetingRaisedTime,
@@ -325,6 +327,8 @@ function openMeetingDetailsModal(mid) {
   let mreqt = $(".mreqt");
   let mat = $(".mat");
   let mrejt = $(".mrejt");
+  let mrejr = $(".mrejreasons");
+
   let mrest = $(".mrest");
   let met = $(".met");
   let acc = $(".acc");
@@ -348,6 +352,8 @@ function openMeetingDetailsModal(mid) {
   mreqt.text(m.meetingRequestTime);
   mat.text(m.meetingAcceptedTime);
   mrejt.text(m.meetingRejectedTime);
+  mrejr.text(m.rejectedReasons);
+
   mrest.text(m.meetingRescheduledOn);
   met.text(m.meetingEndTime);
   acc.text(m.accepted);

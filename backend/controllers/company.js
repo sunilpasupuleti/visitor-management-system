@@ -10,7 +10,6 @@ const meetingModel = require("../models/meetingModel");
 const configModels = require("../models/configModels");
 const adminModels = require("../models/adminModels");
 const firebase = require("firebase-admin");
-
 module.exports = {
   async getCompany(req, res) {
     const data = await CompanyModels.findOne({
@@ -107,6 +106,12 @@ module.exports = {
       .auth()
       .createUser(userBody)
       .then(async function (userRecord) {
+        const db = firebase.firestore();
+        const collection = db.collection("companyIds");
+        const docName = collection.doc(userRecord.uid);
+        await docName.set({
+          companyId: value.company,
+        });
         delete userBody.disabled;
         delete userBody.emailVerified;
         await adminModels
@@ -285,6 +290,8 @@ module.exports = {
       });
       if (users && users.length > 0) {
         users.forEach(async (element) => {
+          const db = firebase.firestore();
+          await db.collection("companyIds").doc(element.uid).delete();
           firebase
             .auth()
             .deleteUser(element.uid)
@@ -337,6 +344,9 @@ module.exports = {
       await configModels.deleteMany({
         company: details.company._id,
       });
+
+      const db = firebase.firestore();
+      await db.collection("companyIds").doc(details.uid).delete();
 
       firebase
         .auth()

@@ -3,6 +3,17 @@ const Meeting = require("../models/meetingModel");
 const Visitor = require("../models/visitorModels");
 const Employee = require("../models/employeeModels");
 const helpers = require("../helpers/helpers");
+const mongoose = require("mongoose");
+
+async function validateMeetingTimer(meetingId) {
+  setTimeout(async () => {
+    console.log("meeting timer one minute completed");
+    let meeting = await Meeting.findOne({ _id: meetingId });
+    if (meeting.status === "upcoming") {
+      await Meeting.deleteOne({ _id: meetingId });
+    }
+  }, 60 * 1000);
+}
 
 module.exports = {
   async requestForMeeting(req, res) {
@@ -25,15 +36,33 @@ module.exports = {
         .status(httpstatus.BAD_REQUEST)
         .json({ message: "Purpose and vehicle number required " });
     }
-    let employee = await Employee.findOne({ _id: empId });
+    let ifAlreadyRequested = await Meeting.findOne({
+      "employee._id": empId,
+      "visitor._id": req.user._id,
+      status: "upcoming",
+    });
+    if (ifAlreadyRequested) {
+      return res.status(httpstatus.BAD_REQUEST).json({
+        message:
+          "Cannot place meeting . Please wait 1 min to request meeting again ",
+      });
+    }
+    let employee;
+    await Employee.findOne({
+      _id: mongoose.Types.ObjectId(empId),
+    }).then((result) => (employee = { ...result._doc }));
+    employee._id = empId;
+
     if (employee.status === "disabled") {
       return res.status(httpstatus.BAD_REQUEST).json({
         message: "Cannot place meeting . Employee is in another meeting ",
       });
     }
+    var date = new Date();
+    var counterEndTime = date.setSeconds(date.getSeconds() * 60);
     // else request for meeting
     const body = {
-      employee: { ...employee, _id: empId },
+      employee: employee,
       visitor: req.user,
       meetingRaisedTime: new Date(),
       meetingRequestTime: new Date(),
@@ -43,12 +72,14 @@ module.exports = {
       status: "upcoming", //upcmoing
       purpose,
       vehicleNumber,
+      counterEndTime,
     };
 
-    // again send push token to employeee that meeting was requested
+    // again send push token to employeee that meeting was requested and sms also
 
     await Meeting.create(body)
       .then((result) => {
+        validateMeetingTimer(result._id);
         res.status(httpstatus.OK).json({
           message: "meeting added successfully: ",
           meeting: result,
@@ -85,8 +116,13 @@ module.exports = {
   },
 
   async updateMeetingStatus(req, res) {
-    const { meetingId, status, meetingMinutesNotes, rescheduledTime } =
-      req.body;
+    const {
+      meetingId,
+      status,
+      meetingMinutesNotes,
+      rescheduledTime,
+      rejectedReasons,
+    } = req.body;
     if (
       // !empId ||
       !meetingId ||
@@ -149,6 +185,11 @@ module.exports = {
       updatedBody.isInProgress = false;
     } else if (status === "rejected") {
       // rejected
+      if (!rejectedReasons) {
+        return res.status(httpstatus.BAD_REQUEST).json({
+          message: "No rejected reasons was provided",
+        });
+      }
       updatedBody.isInProgress = false;
       updatedBody.accepted = false;
       updatedBody.meetingRejectedTime = new Date();
@@ -208,30 +249,15 @@ module.exports = {
   },
 
   async searchMeeting(req, res) {
-    let searchText = helpers.lowercase(req.body.searchText);
-
-    let meetings = await Meeting.find({})
-      .populate("visitor")
-      .populate("employee");
-
-    const filteredData = await meetings.filter((e) => {
-      return (
-        helpers.lowercase(e.visitor.name).includes(searchText) ||
-        helpers.lowercase(e.visitor.phone).includes(searchText) ||
-        helpers.lowercase(e.visitor.company).includes(searchText) ||
-        helpers.lowercase(e.visitor.address).includes(searchText) ||
-        helpers.lowercase(e.visitor.area).includes(searchText) ||
-        helpers.lowercase(e.employee.name).includes(searchText) ||
-        helpers.lowercase(e.employee.email).includes(searchText) ||
-        helpers.lowercase(e.employee.phone).includes(searchText) ||
-        helpers.lowercase(e.employee.department).includes(searchText) ||
-        helpers.lowercase(e.employee.title).includes(searchText)
-      );
+    let meeting = await Meeting.findOne({
+      "employee._id": req.user._id.toString(),
+      status: "upcoming",
     });
 
     return res.status(httpstatus.OK).json({
       message: "Meeting details by searching  : ",
-      meetings: filteredData,
+      currentTime: new Date(),
+      meeting,
     });
   },
 
@@ -239,7 +265,7 @@ module.exports = {
     const { status } = req.query;
     if (!status) {
       return res.status(httpstatus.BAD_REQUEST).json({
-        message: "NO status or limit provided",
+        message: "NO status  provided",
       });
     }
     await Meeting.find({

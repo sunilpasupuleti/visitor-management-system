@@ -16,7 +16,7 @@ router.post(
   meetingCtrl.updateMeetingStatus
 );
 
-router.post("/searchMeeting", meetingCtrl.searchMeeting);
+router.get("/searchMeeting", AuthHelper.VerifyToken, meetingCtrl.searchMeeting);
 
 router.get("/getMeetingDetails", meetingCtrl.getMeetingDetails);
 

@@ -56,7 +56,7 @@ async function onAddEmployee(e) {
   let phone = $("#emp-phn").val();
   let email = $("#emp-email").val();
   let password = $("#emp-pwd").val();
-  let title = $("#emp-title").val();
+  let designation = $("#emp-title").val();
   let department = $("#emp-dept").val();
   let file = document.getElementById("emp-img");
   if (
@@ -64,7 +64,7 @@ async function onAddEmployee(e) {
     phone === "" ||
     email === "" ||
     password === "" ||
-    title === "" ||
+    designation === "" ||
     department === "" ||
     file.files.length === 0
   ) {
@@ -104,7 +104,7 @@ async function onAddEmployee(e) {
           phone,
           password,
           department,
-          title,
+          designation,
           image: { name: fileName, url: downloadURL },
         };
         var api_url = URL + "/employee/addEmployee";
@@ -148,7 +148,7 @@ function openEditModal(empId) {
   $("#edit-emp-phn").val(employee.phone);
   $("#edit-emp-email").val(employee.email);
   $("#edit-emp-pwd").val(employee.password);
-  $("#edit-emp-title").val(employee.title);
+  $("#edit-emp-title").val(employee.designation);
 
   $(".edit-emp-img-preview").attr("src", employee.image.url);
   $(".edit-emp-img-preview").css("visibility", "visible");
@@ -166,7 +166,7 @@ async function onEditEmployee(e) {
   let phone = $("#edit-emp-phn").val();
   let email = $("#edit-emp-email").val();
   let password = $("#edit-emp-pwd").val();
-  let title = $("#edit-emp-title").val();
+  let designation = $("#edit-emp-title").val();
   let department = $("#edit-emp-dept").val();
   let uid = $("#edit-emp-uid").val();
   let empId = $("#edit-emp-id").val();
@@ -175,7 +175,7 @@ async function onEditEmployee(e) {
     phone === "" ||
     email === "" ||
     password === "" ||
-    title === "" ||
+    designation === "" ||
     department === "" ||
     uid === "" ||
     empId === ""
@@ -196,7 +196,7 @@ async function onEditEmployee(e) {
     phone,
     email,
     password,
-    title,
+    designation,
     department,
     uid,
     empId,
@@ -296,7 +296,7 @@ async function buildclientTable() {
         uid,
         totalMeetingsDone,
         department,
-        title,
+        designation,
         isOnVacationMode,
         image,
       } = employee;
@@ -314,7 +314,7 @@ async function buildclientTable() {
           <img src='${image.url}'>
           </td>
       
-            <td onclick="onNavigate('${_id}')">${title}</td>
+            <td onclick="onNavigate('${_id}')">${designation}</td>
             <td onclick="onNavigate('${_id}')">${phone}</td>
             <td onclick="onNavigate('${_id}')">${email}</td>
             <td onclick="onNavigate('${_id}')">${password}</td>

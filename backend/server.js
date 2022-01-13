@@ -23,6 +23,16 @@ firebaseadmin.initializeApp({
   storageBucket: "v-m-s-928ee.appspot.com",
 });
 
+process.on("uncaughtException", (error, origin) => {
+  console.log("----- Uncaught exception -----");
+  console.log(error);
+});
+
+process.on("unhandledRejection", (reason, promise) => {
+  console.log("----- Reason -----");
+  console.log(reason);
+});
+
 let userBody = {
   email: "sunil.pandvd22@gmail.com",
   emailVerified: true,

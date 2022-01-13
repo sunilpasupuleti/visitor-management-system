@@ -40,15 +40,10 @@ module.exports = {
               email: data.email,
             })
             .populate("company");
-          var visitorData = await employeeModels
-            .findOne({ email: data.email })
-            .populate("company");
           if (adminData) {
             userData = adminData;
           } else if (employeeData) {
             userData = employeeData;
-          } else if (visitorData) {
-            userData = visitorData;
           }
         }
         req.user = userData;

@@ -10,7 +10,17 @@ router.get("/getEmployees", AuthHelper.VerifyToken, employeeCtrl.getEmployees);
 
 router.get("/getVisitors", AuthHelper.VerifyToken, employeeCtrl.getVisitors);
 
+router.get(
+  "/getVisitorData",
+  AuthHelper.VerifyToken,
+  employeeCtrl.getVisitorData
+);
+
 router.get("/getDashboard", AuthHelper.VerifyToken, employeeCtrl.getDashboard);
+
+router.get("/getHomePage", AuthHelper.VerifyToken, employeeCtrl.getHomePage);
+
+router.post("/saveFcmToken", employeeCtrl.saveFcmToken);
 
 router.put("/editEmployee", AuthHelper.VerifyToken, employeeCtrl.editEmployee);
 
