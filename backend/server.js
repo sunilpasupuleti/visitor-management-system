@@ -33,13 +33,25 @@ process.on("unhandledRejection", (reason, promise) => {
   console.log(reason);
 });
 
+mongoose.Promise = global.Promise;
+
+const connect = async () => {
+  await mongoose.connect(process.env.URL, {
+    useNewUrlParser: true,
+    useUnifiedTopology: true,
+  });
+};
+
+connect().then();
+
 let userBody = {
-  email: "sunil.pandvd22@gmail.com",
+  email: "admin@gmail.com",
   emailVerified: true,
   password: "123456",
-  displayName: "Sunil Kumar",
+  displayName: "Super Admin",
   disabled: false,
 };
+
 firebaseadmin
   .auth()
   .createUser(userBody)
@@ -76,12 +88,13 @@ app.use("/company", company);
 
 const http = require("http").Server(app);
 
-mongoose.Promise = global.Promise;
-
-mongoose.connect(process.env.URL, {
-  useNewUrlParser: true,
-  useUnifiedTopology: true,
+const io = require("socket.io")(http, {
+  cors: {
+    origin: "*",
+  },
 });
+
+require("./sockets/streams")(io);
 
 http.listen(process.env.PORT || 8080, () => {
   console.log(`server started on port number ${process.env.PORT}`);

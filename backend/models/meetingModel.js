@@ -27,6 +27,7 @@ const meetingsSchema = mongoose.Schema(
     gateExitTime: { type: Date },
     company: { type: mongoose.Schema.Types.ObjectId, ref: "Company" },
     counterEndTime: { type: Date },
+    duration: { type: String },
   },
   { strict: false, timstamps: true }
 );

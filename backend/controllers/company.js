@@ -102,6 +102,7 @@ module.exports = {
       displayName: value.name,
       disabled: false,
     };
+
     firebase
       .auth()
       .createUser(userBody)
@@ -110,7 +111,8 @@ module.exports = {
         const collection = db.collection("companyIds");
         const docName = collection.doc(userRecord.uid);
         await docName.set({
-          companyId: value.company,
+          companyId: value.company._id,
+          companyName: value.company.name,
         });
         delete userBody.disabled;
         delete userBody.emailVerified;
@@ -133,7 +135,9 @@ module.exports = {
             });
           });
       })
-      .catch((err) => {});
+      .catch((err) => {
+        console.log(err);
+      });
   },
 
   async updateCompany(req, res) {

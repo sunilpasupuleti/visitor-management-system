@@ -7,9 +7,17 @@ const mongoose = require("mongoose");
 const helper = require("../helpers/helpers");
 const firebase = require("firebase-admin");
 const jwt = require("jsonwebtoken");
+const companyModels = require("../models/companyModels");
 
 module.exports = {
   async searchVisitorNumber(req, res) {
+    var phoneno = /^\(?([0-9]{3})\)?[-. ]?([0-9]{3})[-. ]?([0-9]{4})$/;
+    if (!req.query.phone.match(phoneno)) {
+      return res
+        .status(httpstatus.CONFLICT)
+        .json({ message: "Invalid phone number" });
+    }
+
     await Visitor.findOne({
       phone: req.query.phone,
     })
@@ -85,6 +93,13 @@ module.exports = {
         .status(httpstatus.CONFLICT)
         .json({ message: "Visitor already exists" });
     }
+
+    var companyExists = await companyModels.findOne({ _id: company });
+    if (!companyExists) {
+      return res.status(httpstatus.OK).json({
+        message: "Company Id is invalid : ",
+      });
+    }
     const visitorDetails = {
       name: helper.capitalize(req.body.name),
       phone: req.body.phone,
@@ -93,6 +108,7 @@ module.exports = {
       idType,
       selfieLink,
       company,
+      companyName,
     };
 
     // send otp functionality remaining

@@ -5,6 +5,7 @@ const firebaseAdmin = require("firebase-admin");
 const mongoose = require("mongoose");
 const adminModels = require("../models/adminModels");
 const jwt = require("jsonwebtoken");
+const moment = require("moment");
 
 module.exports = {
   async adminLogin(req, res) {
@@ -17,7 +18,7 @@ module.exports = {
       return;
     }
     delete req.body.emailVerified;
-    let result = await adminModels.findOne({ uid: uid });
+    let result = await adminModels.findOne({ uid: uid }).populate("company");
     if (result) {
       const token = jwt.sign({ data: result }, process.env.SECRETS, {
         expiresIn: "1h",

@@ -4,6 +4,9 @@ const Visitor = require("../models/visitorModels");
 const Employee = require("../models/employeeModels");
 const helpers = require("../helpers/helpers");
 const mongoose = require("mongoose");
+const moment = require("moment");
+moment.suppressDeprecationWarnings = true;
+const firebase = require("firebase-admin");
 
 async function validateMeetingTimer(meetingId) {
   setTimeout(async () => {
@@ -78,7 +81,15 @@ module.exports = {
     // again send push token to employeee that meeting was requested and sms also
 
     await Meeting.create(body)
-      .then((result) => {
+      .then(async (result) => {
+        let employee = await Employee.findOne({ _id: result.employee._id });
+        let fcm = employee.fcmToken;
+        firebase.messaging().sendToDevice(fcm, {
+          data: {
+            meeting: result,
+          },
+        });
+
         validateMeetingTimer(result._id);
         res.status(httpstatus.OK).json({
           message: "meeting added successfully: ",
@@ -159,12 +170,24 @@ module.exports = {
         });
       }
 
+      let raisedTime = moment(details.meetingRaisedTime).format(
+        "MMM DD , YYYY hh:mm:ss"
+      );
+      let endTime = moment(details.meetingEndTime).format(
+        "MMM DD , YYYY hh:mm:ss"
+      );
+      let diff = moment(endTime).diff(raisedTime);
+      let duration = moment(diff).format("hh:mm:ss");
+
       // get vis Id and emp Id
       await Visitor.updateOne(
         {
           _id: details.visitor._id,
         },
         {
+          $set: {
+            duration: duration,
+          },
           $inc: {
             totalMeetingsDone: 1,
           },

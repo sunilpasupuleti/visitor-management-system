@@ -6,6 +6,8 @@ const Visitor = require("../models/visitorModels");
 const helper = require("../helpers/helpers");
 
 const mongoose = require("mongoose");
+const moment = require("moment");
+moment.suppressDeprecationWarnings = true;
 
 async function editMeetings(body, compId) {
   let meetings = await Meeting.find({ company: compId });
@@ -15,7 +17,7 @@ async function editMeetings(body, compId) {
       email: body.email,
       phone: body.phone,
       department: body.department,
-      title: helper.capitalize(body.title),
+      designation: helper.capitalize(body.designation),
       image: body.image,
     };
 
@@ -145,8 +147,84 @@ module.exports = {
     let inProgress = [];
     let upcoming = [];
     let completed = [];
+    let mostVisitedVisitor = {};
+    let longestMeeting;
+    let shortestMeeting;
+    let totalMeetingsDoneToday;
     let empId = req.user._id.toString();
     const details = async () => {
+      let mostVisitedVisitors = await Meeting.aggregate([
+        {
+          $match: {
+            "employee._id": empId,
+            status: "completed",
+          },
+        },
+        {
+          $group: { _id: "$visitor._id", count: { $sum: 1 } },
+        },
+        {
+          $sort: { count: -1 },
+        },
+      ]);
+      if (mostVisitedVisitors.length > 0) {
+        const max = mostVisitedVisitors.reduce((prev, current) =>
+          prev.count > current.count ? prev : current
+        );
+
+        let mostVisitor = await Visitor.findOne({
+          _id: max._id,
+        });
+        max.visitor = mostVisitor;
+        mostVisitedVisitor = max;
+      }
+      let meetings = await Meeting.find({
+        "employee._id": empId,
+        status: "completed",
+      });
+
+      meetings.map((e, index) => {
+        let raisedTime = moment(e.meetingRaisedTime).format(
+          "MMM DD , YYYY hh:mm:ss"
+        );
+        let endTime = moment(e.meetingEndTime).format("MMM DD , YYYY hh:mm:ss");
+        let diff = moment(endTime).diff(raisedTime);
+        meetings[index].duration = moment(diff).format("hh:mm:ss");
+      });
+
+      longestMeeting = meetings.reduce((prev, current) => {
+        return prev.duration > current.duration ? prev : current;
+      });
+
+      shortestMeeting = meetings.reduce((prev, current) => {
+        return prev.duration < current.duration ? prev : current;
+      });
+
+      const totalMeetingsDoneToday = await Meeting.aggregate([
+        {
+          $match: {
+            "employee._id": empId,
+            status: "completed",
+            $expr: {
+              $and: [
+                {
+                  $eq: [
+                    { $dayOfMonth: "$meetingEndTime" },
+                    { $dayOfMonth: new Date() },
+                  ],
+                },
+                {
+                  $eq: [{ $month: "$meetingEndTime" }, { $month: new Date() }],
+                },
+                {
+                  $eq: [{ $year: "$meetingEndTime" }, { $year: new Date() }],
+                },
+              ],
+            },
+          },
+        },
+      ]);
+
       await Meeting.find({
         "employee._id": empId,
         status: "accepted",
@@ -195,6 +273,10 @@ module.exports = {
           upcoming,
           rejected,
           completed,
+          mostVisitedVisitor,
+          longestMeeting,
+          shortestMeeting,
+          totalMeetingsDoneToday,
         });
       })
       .catch((err) => {
@@ -257,6 +339,7 @@ module.exports = {
           requestMeetings,
           todayCompletedMeetings,
           inProgressMeetings,
+          employee: req.user,
         });
       })
       .catch((err) => {
@@ -297,7 +380,7 @@ module.exports = {
       email: helper.lowercase(email),
       department,
       image,
-      designation: helper.capitalize(title),
+      designation: helper.capitalize(designation),
       company: req.user.company._id,
     };
 
@@ -324,7 +407,6 @@ module.exports = {
         password: password,
       })
       .then(async function (userRecord) {
-        console.log(userRecord);
         body.uid = userRecord.uid;
         await Employee.create(body)
           .then((result) => {
@@ -354,7 +436,7 @@ module.exports = {
       uid,
       password,
       department,
-      title,
+      designation,
       empId,
       changedEmpImage,
     } = req.body;
@@ -399,7 +481,7 @@ module.exports = {
       phone,
       password,
       department,
-      title: helper.capitalize(title),
+      designation: helper.capitalize(designation),
       image,
     };
 

@@ -6,7 +6,8 @@ const firebaseAdmin = require("firebase-admin");
 const adminModels = require("../models/adminModels");
 const employeeModels = require("../models/employeeModels");
 const visitorModels = require("../models/visitorModels");
-
+const companyModels = require("../models/companyModels");
+const moment = require("moment");
 dotenv.config();
 
 module.exports = {
@@ -25,7 +26,6 @@ module.exports = {
     }
 
     const token = headerToken.split(" ")[1];
-
     firebaseAdmin
       .auth()
       .verifyIdToken(token)
@@ -46,13 +46,33 @@ module.exports = {
             userData = employeeData;
           }
         }
+        if (userData.role !== "Super Admin") {
+          const date = moment(new Date());
+          var expiry = userData.company.expiresAt;
+          let company = await companyModels.findOne({
+            _id: userData.company._id,
+          });
+          if (!company) {
+            return res.status(httpstatus.UNAUTHORIZED).json({
+              message: "Invalid company Id of employee! ",
+            });
+          }
+          if (date.isAfter(expiry)) {
+            return res.status(httpstatus.UNAUTHORIZED).json({
+              message: "Your license was expired please contact admin ! ",
+              token: "false",
+            });
+          }
+        }
         req.user = userData;
         next();
       })
-      .catch(() => {
+      .catch((err) => {
+        console.log(err);
         return res.status(httpstatus.UNAUTHORIZED).json({
           message: "Token has expired please login again",
           token: "false",
+          err,
         });
       });
   },
@@ -71,7 +91,7 @@ module.exports = {
         .json({ message: "No token provided to access" });
     }
 
-    return jwt.verify(token, process.env.SECRETS, (err, decoded) => {
+    return jwt.verify(token, process.env.SECRETS, async (err, decoded) => {
       if (err) {
         if (err.expiredAt < new Date()) {
           return res.status(httpstatus.INTERNAL_SERVER_ERROR).json({
@@ -81,6 +101,26 @@ module.exports = {
         }
         next();
       }
+      let userData = decoded.data;
+
+      let company = await companyModels.findOne({
+        _id: userData.company._id,
+      });
+      if (!company) {
+        return res.status(httpstatus.UNAUTHORIZED).json({
+          message: "Invalid company Id of Visitor ! ",
+        });
+      }
+
+      const date = moment(new Date());
+      var expiry = userData.company.expiresAt;
+      if (date.isAfter(expiry)) {
+        return res.status(httpstatus.UNAUTHORIZED).json({
+          message: "Your license was expired please contact admin ! ",
+          token: "false",
+        });
+      }
+
       req.user = decoded.data; //data variable was coming from jwt.signin
       next();
     });
