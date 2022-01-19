@@ -96,11 +96,19 @@ async function getDashboardData() {
   let data = getPayload();
   var api_url;
   if (data.role === "Super Admin") {
-    api_url = "/admin/dashboard?company=" + presentCompany._id;
+    if (presentCompany) {
+      api_url = "/admin/dashboard?company=" + presentCompany._id;
+    }
   } else {
     api_url = "/admin/dashboard";
   }
-  $(".company-name").html(presentCompany.name);
+  if (presentCompany) {
+    if (data.company) {
+      $(".company-name").html(data.company.name);
+    } else {
+      $(".company-name").html(presentCompany.name);
+    }
+  }
   var result = await sendRequest("GET", URL + api_url);
   if (result) {
     updateMeetingsData(result);

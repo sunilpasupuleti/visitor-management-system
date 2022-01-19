@@ -9,13 +9,11 @@ let si = 10;
 async function fetchCompanies() {
   showLoader();
   const api_url = URL + "/company/get-companies";
-
   var result = await sendRequest("GET", api_url);
   if (result) {
     companies = result.companies;
     filterCompanies = result.companies;
     buildclientTable();
-    hideLoader();
   }
 }
 
@@ -54,12 +52,12 @@ async function buildclientTable() {
       tableBody.append(tablerow);
     });
   }
+  hideLoader();
 }
 
 async function onAddCompany(e) {
-  console.log(e);
-  showLoader();
   e.preventDefault();
+  showLoader();
   let name = $("#com-name").val();
   let address = $("#com-add").val();
   let expiresAt = $("#com-lic").val();
@@ -163,8 +161,6 @@ async function deleteCompany(comId) {
       }
     }
   });
-
-  showLoader();
 }
 
 function next() {

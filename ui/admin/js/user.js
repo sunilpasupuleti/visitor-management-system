@@ -8,13 +8,11 @@ preventRoute("Super Admin");
 async function fetchUsers() {
   showLoader();
   const api_url = URL + "/company/get-users";
-
   var result = await sendRequest("GET", api_url);
   if (result) {
     users = result.users;
     filterUsers = result.users;
     buildclientTable();
-    hideLoader();
   }
 }
 
@@ -56,6 +54,7 @@ async function buildclientTable() {
       tableBody.append(tablerow);
     });
   }
+  hideLoader();
 }
 
 async function onAddUser(e) {
@@ -65,12 +64,19 @@ async function onAddUser(e) {
   let name = $("#usr-name").val();
   let email = $("#usr-email").val();
   let password = $("#usr-pwd").val();
-  let company = $("#usr-comp").val();
-  if (name === "" || email === "" || password === "" || company === "") {
+  let companyId = $("#usr-comp").val();
+  if (name === "" || email === "" || password === "" || companyId === "") {
     hideLoader();
     $("#error-msg").text("All fields required");
     return;
   }
+
+  let company = companies.filter((c) => c._id === companyId)[0];
+  if (!company) {
+    hideLoader();
+    $("#error-msg").text("Invalid company id");
+  }
+
   const body = {
     name,
     email,

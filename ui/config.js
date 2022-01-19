@@ -1,5 +1,5 @@
 var URL = "http://localhost:3000";
-var URL1 = "https://vms-sunil.herokuapp.com";
+var URL1 = "https://api-vms.herokuapp.com";
 
 // const firebaseConfig = {
 //   apiKey: "AIzaSyDGOiun7dENeOS5XvkJNWXORVf7XvDd6gc",

@@ -12,7 +12,7 @@ async function validateMeetingTimer(meetingId) {
   setTimeout(async () => {
     console.log("meeting timer one minute completed");
     let meeting = await Meeting.findOne({ _id: meetingId });
-    if (meeting.status === "upcoming") {
+    if (meeting && meeting.status === "upcoming") {
       await Meeting.deleteOne({ _id: meetingId });
     }
   }, 60 * 1000);
@@ -86,7 +86,7 @@ module.exports = {
         let fcm = employee.fcmToken;
         firebase.messaging().sendToDevice(fcm, {
           data: {
-            meeting: result,
+            meeting: JSON.stringify(result),
           },
         });
 
