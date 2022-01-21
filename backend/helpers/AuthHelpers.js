@@ -28,7 +28,7 @@ module.exports = {
     const token = headerToken.split(" ")[1];
     firebaseAdmin
       .auth()
-      .verifyIdToken(token)
+      .verifyIdToken(token, true)
       .then(async (data) => {
         let userData;
         if (data.firebase.sign_in_provider === "password") {
@@ -68,7 +68,6 @@ module.exports = {
         next();
       })
       .catch((err) => {
-        console.log(err);
         return res.status(httpstatus.UNAUTHORIZED).json({
           message: "Token has expired please login again",
           token: "false",

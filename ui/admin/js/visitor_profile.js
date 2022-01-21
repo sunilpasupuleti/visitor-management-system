@@ -203,6 +203,8 @@ function buildMeetingsTable() {
               <td>${m.meetingRejectedTime}</td>
               <td>${m.meetingRescheduledOn}</td>
               <td>${m.meetingEndTime}</td>
+              <td>${m.duration}</td>
+
              
               `;
       tableBody.append(tablerow);
@@ -269,6 +271,7 @@ function returnVariables(m) {
     _id: m._id,
     status: m.status,
     purpose: m.purpose,
+    duration: m.duration,
     rejectedReasons: m.rejectedReasons,
     vehicleNumber: m.vehicleNumber,
     visitor: m.visitor,
@@ -329,6 +332,8 @@ function openMeetingDetailsModal(mid) {
   let mrt = $(".mrt");
   let mreqt = $(".mreqt");
   let mat = $(".mat");
+  let metdur = $(".metdur");
+
   let mrejt = $(".mrejt");
   let mrejr = $(".mrejreasons");
 
@@ -354,6 +359,8 @@ function openMeetingDetailsModal(mid) {
   mrt.text(m.meetingRaisedTime);
   mreqt.text(m.meetingRequestTime);
   mat.text(m.meetingAcceptedTime);
+  metdur.text(m.duration);
+
   mrejt.text(m.meetingRejectedTime);
   mrejr.text(m.rejectedReasons);
 
@@ -389,7 +396,7 @@ function openMeetingDetailsModal(mid) {
 
 async function searchFilter(e) {
   let filteredData;
-
+  visitorMeetings = AllVisitorMeetings;
   let searchText = e.target.value.toLowerCase().trim();
 
   if (searchText.length === 0) {

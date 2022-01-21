@@ -1,5 +1,6 @@
-var URL = "http://localhost:3000";
+var URL2 = "http://localhost:3000";
 var URL1 = "https://api-vms.herokuapp.com";
+var URL = "https://backend-vms.webwizard.in";
 
 // const firebaseConfig = {
 //   apiKey: "AIzaSyDGOiun7dENeOS5XvkJNWXORVf7XvDd6gc",
@@ -187,6 +188,81 @@ function addNav(activeId) {
 </nav>
 
   `;
+
+  var mobileNavHtml = `
+  <div class="navbar navbar-expand-xl bg-white navbar-light">
+  <!-- Brand -->
+  <div
+    class="navbar-brand"
+    onclick="(function(){location.href='/admin/index.html'})();"
+  >
+    VMS
+  </div>
+
+  <!-- Toggler/collapsibe Button -->
+  <button
+    class="navbar-toggler"
+    type="button"
+    data-toggle="collapse"
+    data-target="#collapsibleNavbar"
+  >
+    <span class="navbar-toggler-icon"></span>
+  </button>
+
+  <!-- Navbar links -->
+  <div class="collapse navbar-collapse" id="collapsibleNavbar">
+    <ul class="navbar-nav mt-3">
+      <li class="nav-item">
+        <a id="dashboard" class="nav-link" href="index.html">
+          <span>Dashboard</span>
+          <i class="fas fa-tv"></i>
+        </a>
+      </li>
+
+      <li class="nav-item ismaster-link">
+        <a id="company" class="nav-link" href="companies.html">
+          <span>Companies</span>
+          <i class="far fa-building"></i>
+        </a>
+      </li>
+
+      <li class="nav-item ismaster-link">
+        <a id="user" class="nav-link" href="users.html">
+          <span>Add Users</span>
+          <i class="fas fa-user-friends"></i>
+        </a>
+      </li>
+
+      <li class="nav-item isadmin-link">
+        <a id="visitor" class="nav-link" href="visitors.html">
+          <span>Visitors</span>
+          <i class="fas fa-male"></i>
+        </a>
+      </li>
+      <li class="nav-item isadmin-link">
+        <a id="employee" class="nav-link" href="employees.html">
+          <span>Employees</span>
+          <i class="fas fa-user"></i>
+        </a>
+      </li>
+
+      <li class="nav-item isadmin-link">
+        <a id="meeting" class="nav-link" href="meetings.html">
+          <span>Meetings</span>
+          <i class="fas fa-handshake"></i>
+        </a>
+      </li>
+
+      <li id="logout" class="nav-item" onclick="onLogout()">
+        <a class="nav-link" style="cursor: pointer">
+          <span>Logout</span>
+          <i class="fas fa-sign-out-alt text-dark"></i>
+        </a>
+      </li>
+    </ul>
+  </div>
+</div>
+  `;
   var headerHtml = `
 <!-- Topnav -->
 <nav class="navbar navbar-top navbar-expand border-bottom">
@@ -346,6 +422,7 @@ function addNav(activeId) {
 
   var cloneMainContent = $(".main-content").clone();
   $(".main").remove();
+
   $("body").append(navHtml);
   $("body").append(cloneMainContent);
   $(".header").append(headerHtml);
@@ -355,6 +432,12 @@ function addNav(activeId) {
   let payload = getPayload();
   $(".profile-username").html(`${payload.name}`);
   $(".profile-picture").html(payload.name.charAt(0));
+
+  let width = window.innerWidth;
+  if (width < 1200) {
+    console.log("yes add mobile nav");
+    $(".mobile-nav").append(mobileNavHtml);
+  }
 
   $("#" + activeId).addClass("active");
   $("#" + activeId + " span").addClass("text-primary");

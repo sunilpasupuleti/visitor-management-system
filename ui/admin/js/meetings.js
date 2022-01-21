@@ -18,7 +18,7 @@ let timer;
 
 async function searchFilter(e) {
   let filteredData;
-
+  meetings = filteredMeetings;
   let searchText = e.target.value.toLowerCase().trim();
 
   if (searchText.length === 0) {
@@ -112,6 +112,7 @@ function returnVariables(m) {
     status: m.status,
     visitor: m.visitor,
     employee: m.employee,
+    duration: m.duration,
     rejectedReasons: m.rejectedReasons,
     purpose: m.purpose,
     vehicleNumber: m.vehicleNumber,
@@ -171,6 +172,7 @@ function buildclientTable() {
   } else {
     let currentMeetingsCount = 0;
     const filMeetings = meetings.slice(s, si);
+
     filMeetings.forEach(async (meeting) => {
       currentMeetingsCount += 1;
       const m = returnVariables(meeting);
@@ -192,6 +194,8 @@ function buildclientTable() {
           <td>${m.meetingRejectedTime}</td>
           <td>${m.meetingRescheduledOn}</td>
           <td>${m.meetingEndTime}</td>
+          <td>${m.duration}</td>
+
          </tr>
           `;
       tableBody.append(tablerow);
@@ -249,6 +253,8 @@ function openMeetingDetailsModal(type, mid) {
 
   let mrest = $(".mrest");
   let met = $(".met");
+  let metdur = $(".metdur");
+
   let acc = $(".acc");
   let res = $(".res");
   let bel = $(".bel");
@@ -286,6 +292,8 @@ function openMeetingDetailsModal(type, mid) {
 
   mrest.text(m.meetingRescheduledOn);
   met.text(m.meetingEndTime);
+  metdur.text(m.duration);
+
   acc.text(m.accepted);
   res.text(m.rescheduled);
   if (m.otherBelongings.length !== 0) {
@@ -333,6 +341,13 @@ showData().then(() => {
 
 function createChart() {
   const ctx = document.getElementById("meetingsChart").getContext("2d");
+  let datasets = [
+    rescheduledMeetings.length,
+    upComingMeetings.length,
+    currentMeetings.length,
+    rejectedMeetings.length,
+    completedMeetings.length,
+  ];
   const myChart = new Chart(ctx, {
     type: "doughnut",
     data: {
@@ -341,13 +356,7 @@ function createChart() {
       datasets: [
         {
           label: "No of meetings",
-          data: [
-            rescheduledMeetings.length,
-            upComingMeetings.length,
-            currentMeetings.length,
-            rejectedMeetings.length,
-            completedMeetings.length,
-          ],
+          data: datasets,
           backgroundColor: [
             "rgba(255,165,0 , 0.2)", //rescheduled
             "rgba(54, 162, 235, 0.2)", //upcoming
@@ -368,9 +377,26 @@ function createChart() {
     },
     options: {
       responsive: false,
-      scales: {
-        y: {
-          beginAtZero: true,
+
+      plugins: {
+        datalabels: {
+          formatter: (value) => {
+            let sum = 0;
+            let dataArr = datasets;
+            dataArr.map((data) => {
+              sum += data;
+            });
+            if (value > 0) {
+              let percentage = ((value * 100) / sum).toFixed(2) + "%";
+              return percentage;
+            } else {
+              return "";
+            }
+          },
+          color: "#000000",
+        },
+        legend: {
+          display: true,
         },
       },
     },

@@ -133,6 +133,7 @@ module.exports = {
       meetingMinutesNotes,
       rescheduledTime,
       rejectedReasons,
+      meetingEndTime,
     } = req.body;
     if (
       // !empId ||
@@ -147,6 +148,12 @@ module.exports = {
     }
 
     let details = await Meeting.findOne({ _id: meetingId });
+
+    if (!details) {
+      return res.status(httpstatus.OK).json({
+        message: "There was no meeting  : ",
+      });
+    }
 
     let updatedBody = {
       status: status,
@@ -166,28 +173,33 @@ module.exports = {
     } else if (status === "completed") {
       if (!meetingMinutesNotes) {
         return res.status(httpstatus.BAD_REQUEST).json({
-          message: "No meeting notes was provided",
+          message: "No meeting notes was provided ",
+        });
+      }
+      if (!meetingEndTime) {
+        return res.status(httpstatus.BAD_REQUEST).json({
+          message: "Please provide meeting end time ! (meetingEndTime)  ",
         });
       }
 
       let raisedTime = moment(details.meetingRaisedTime).format(
-        "MMM DD , YYYY hh:mm:ss"
+        "MMM-DD-YYYY-hh:mm:ss"
       );
-      let endTime = moment(details.meetingEndTime).format(
-        "MMM DD , YYYY hh:mm:ss"
-      );
-      let diff = moment(endTime).diff(raisedTime);
-      let duration = moment(diff).format("hh:mm:ss");
+      let endTime = moment(+meetingEndTime).format("MMM-DD-YYYY-hh:mm:ss");
+      let duration = moment.duration(moment(endTime).diff(raisedTime));
+      let durationHours = duration.hours();
+      let durationMin = duration.minutes();
+      let durationSec = duration.seconds();
 
+      duration = durationHours + "h " + durationMin + "m " + durationSec + "s";
+
+      updatedBody.duration = duration;
       // get vis Id and emp Id
       await Visitor.updateOne(
         {
           _id: details.visitor._id,
         },
         {
-          $set: {
-            duration: duration,
-          },
           $inc: {
             totalMeetingsDone: 1,
           },
@@ -226,6 +238,7 @@ module.exports = {
       );
     } else if (status === "reschedule") {
       // reschedule time
+
       if (!rescheduledTime) {
         return res.status(httpstatus.BAD_REQUEST).json({
           message: "No rescheduled time was provided",
@@ -255,18 +268,13 @@ module.exports = {
       }
     )
       .then((result) => {
-        if (!result) {
-          return res.status(httpstatus.CONFLICT).json({
-            message: "Wrong emp id or meeting id : ",
-            status: false,
-          });
-        }
         res.status(httpstatus.OK).json({
           message: "meeting details updated : ",
           status: true,
         });
       })
       .catch((err) => {
+        console.log(err);
         res.status(httpstatus.INTERNAL_SERVER_ERROR).json({ message: err });
       });
   },

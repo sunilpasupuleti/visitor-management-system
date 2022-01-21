@@ -38,17 +38,42 @@
 .filter-flex {
   display: flex;
   align-items: center;
+  flex-wrap: wrap;
   justify-content: space-between;
   /* justify-content: flex-end; */
 }
 
 .date-picker {
   display: flex;
-  justify-content: end;
+  align-items: center;
+}
+.submit-btn {
+  height: 50px !important;
+  margin-left: 6px;
+  width: 100%;
+}
+
+@media (max-width: 768px) {
+  .filter-flex {
+    display: block;
+  }
+  .date-picker {
+    display: block !important;
+  }
+
+  .date-picker::before {
+    content: "Date Filter";
+    margin-left: 13px;
+    font-weight: 600;
+  }
+  .company-name {
+    display: none;
+  }
 }
 
 .company-name {
   text-transform: uppercase;
+  font-size: 18px;
 }
 
 .filters {
@@ -199,4 +224,34 @@ label {
 
 .text-primary {
   color: #777 !important;
+}
+
+.mobile-nav .navbar-nav .nav-item a {
+  padding: 0.5rem !important;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 1rem;
+}
+
+.mobile-nav {
+  display: none !important;
+}
+
+@media (max-width: 1200px) {
+  .mobile-nav {
+    display: block !important;
+  }
+}
+
+@media (min-width: 1000px) {
+  .at-center {
+    position: absolute;
+    top: 50%;
+    left: 50%;
+    transform: translate(-50%, -50%);
+  }
+  .at-center input {
+    width: 600px;
+  }
 }

@@ -50,6 +50,7 @@ async function rangeData() {
       createRejectedChart(result);
       createEmpVisChart(result);
       bestEmployeeChart(result);
+      createDeptWiseChart(result);
       hideLoader();
     }
   }
@@ -90,6 +91,7 @@ function destroyCharts() {
   empvischart.destroy();
   bestempchart.destroy();
   dashboardchart.destroy();
+  deptWiseChart.destroy();
 }
 
 async function getDashboardData() {
@@ -111,6 +113,7 @@ async function getDashboardData() {
   }
   var result = await sendRequest("GET", URL + api_url);
   if (result) {
+    console.log(result);
     updateMeetingsData(result);
     updateBestEmployeeTable(result);
     updateDetailsCard(result);
@@ -119,6 +122,7 @@ async function getDashboardData() {
     createRejectedChart(result);
     createEmpVisChart(result);
     bestEmployeeChart(result);
+    createDeptWiseChart(result);
     hideLoader();
   }
   // let data = await response.json();
@@ -165,7 +169,7 @@ function updateBestEmployeeTable(data) {
           </th>
          
           <th>
-          <a  style="cursor:pointer; color:#0341fc;" href="employee_profile.html?employeeId=${m.empId._id}">${m.emp.name}</a>
+          <a  style="cursor:pointer; color:#0341fc;" href="employee_profile.html?employeeId=${m.empId}">${m.emp.name}</a>
           </th>
           <td>${m.emp.email}</td>
           <td>${m.count}</td>
@@ -264,10 +268,18 @@ let dashboardchart,
   completedmeetingschart,
   rejectedmeetingschart,
   empvischart,
-  bestempchart;
+  bestempchart,
+  deptWiseChart;
 
 function createChart(data) {
   const ctx = document.getElementById("dashboardChart").getContext("2d");
+  let datasets = [
+    data.totalRescheduledMeetingsDoneLength,
+    data.upComingMeetingsToday,
+    data.currentMeetingsOnSite,
+    data.totalRejectedMeetingsDoneLength,
+    data.totalMeetingsDoneLength,
+  ];
   dashboardchart = new Chart(ctx, {
     type: "doughnut",
     data: {
@@ -276,13 +288,7 @@ function createChart(data) {
       datasets: [
         {
           label: "No of meetings",
-          data: [
-            data.totalRescheduledMeetingsDoneLength,
-            data.upComingMeetingsToday,
-            data.currentMeetingsOnSite,
-            data.totalRejectedMeetingsDoneLength,
-            data.totalMeetingsDoneLength,
-          ],
+          data: datasets,
           backgroundColor: [
             "rgba(255,165,0 , 0.2)", //rescheduled
             "rgba(54, 162, 235, 0.2)", //upcoming
@@ -303,9 +309,25 @@ function createChart(data) {
     },
     options: {
       responsive: false,
-      scales: {
-        y: {
-          beginAtZero: true,
+      plugins: {
+        datalabels: {
+          formatter: (value) => {
+            let sum = 0;
+            let dataArr = datasets;
+            dataArr.map((data) => {
+              sum += data;
+            });
+            if (value > 0) {
+              let percentage = ((value * 100) / sum).toFixed(2) + "%";
+              return percentage;
+            } else {
+              return "";
+            }
+          },
+          color: "#000",
+        },
+        legend: {
+          display: true,
         },
       },
     },
@@ -317,6 +339,7 @@ function createCompletedChart(data) {
   const ctx = document
     .getElementById("dashboardCompletedChart")
     .getContext("2d");
+  let datasets = [v.day.count, v.week.count, v.month.count, v.year.count];
   completedmeetingschart = new Chart(ctx, {
     type: "bar",
     data: {
@@ -325,7 +348,7 @@ function createCompletedChart(data) {
       datasets: [
         {
           label: "No of Completed Meetings",
-          data: [v.day.count, v.week.count, v.month.count, v.year.count],
+          data: datasets,
 
           backgroundColor: [
             "rgba(75, 192, 192, 0.2)",
@@ -345,9 +368,19 @@ function createCompletedChart(data) {
     },
     options: {
       responsive: false,
-      scales: {
-        y: {
-          beginAtZero: true,
+      plugins: {
+        datalabels: {
+          formatter: (value) => {
+            if (value > 0) {
+              return value;
+            } else {
+              return "";
+            }
+          },
+          color: "#000",
+        },
+        legend: {
+          display: true,
         },
       },
     },
@@ -385,9 +418,19 @@ function createRejectedChart(data) {
     },
     options: {
       responsive: false,
-      scales: {
-        y: {
-          beginAtZero: true,
+      plugins: {
+        datalabels: {
+          formatter: (value) => {
+            if (value > 0) {
+              return value;
+            } else {
+              return "";
+            }
+          },
+          color: "#000",
+        },
+        legend: {
+          display: true,
         },
       },
     },
@@ -396,6 +439,7 @@ function createRejectedChart(data) {
 
 function createEmpVisChart(data) {
   const ctx = document.getElementById("empVisChart").getContext("2d");
+  let datasets = [data.totalVisitors, data.totalEmployees];
   empvischart = new Chart(ctx, {
     type: "bar",
     data: {
@@ -403,7 +447,7 @@ function createEmpVisChart(data) {
       datasets: [
         {
           label: "No of people",
-          data: [data.totalVisitors, data.totalEmployees],
+          data: datasets,
           backgroundColor: [
             "rgba(153, 102, 255, 0.2)",
             "rgba(201, 203, 207, 0.2)",
@@ -415,9 +459,73 @@ function createEmpVisChart(data) {
     },
     options: {
       responsive: false,
-      scales: {
-        y: {
-          beginAtZero: true,
+      plugins: {
+        datalabels: {
+          formatter: (value) => {
+            let sum = 0;
+            let dataArr = datasets;
+            dataArr.map((data) => {
+              sum += data;
+            });
+            if (value > 0) {
+              let percentage = ((value * 100) / sum).toFixed(2) + "%";
+              return percentage;
+            } else {
+              return "";
+            }
+          },
+          color: "#000",
+        },
+        legend: {
+          display: true,
+        },
+      },
+    },
+  });
+}
+
+function createDeptWiseChart(data) {
+  const ctx = document.getElementById("deptWiseChart").getContext("2d");
+  let labels = [];
+  let datasets = [];
+
+  for (item in data.departmentWiseMeetings) {
+    var value = data.departmentWiseMeetings;
+    labels.push(item);
+    datasets.push(value[item]);
+  }
+  deptWiseChart = new Chart(ctx, {
+    type: "pie",
+    data: {
+      labels: labels,
+      datasets: [
+        {
+          data: datasets,
+        },
+      ],
+    },
+    options: {
+      responsive: false,
+      plugins: {
+        datalabels: {
+          formatter: (value) => {
+            let sum = 0;
+            let dataArr = datasets;
+            dataArr.map((data) => {
+              sum += data;
+            });
+            if (value > 0) {
+              let percentage = ((value * 100) / sum).toFixed(2) + "%";
+              return percentage;
+            } else {
+              return "";
+            }
+          },
+          color: "#000000",
+        },
+        legend: {
+          display: true,
+          // position: "right",
         },
       },
     },
@@ -438,7 +546,7 @@ function bestEmployeeChart(data) {
       labels: labels,
       datasets: [
         {
-          label: "Employees by high number of meetings",
+          label: "Employees with highest number of meetings",
           data: values,
           fill: false,
           borderColor: "rgb(75, 192, 192)",

@@ -71,6 +71,8 @@
   <body>
     <div id="loader" class="center"></div>
 
+    <div class="mobile-nav"></div>
+
     <div class="main">
       <!-- Main content -->
       <div class="main-content">
@@ -104,12 +106,16 @@
               <label for="">From </label>
               <input type="date" id="from_date" class="form-control" />
             </div>
-            <div class="form-group ml-3">
+            <div class="form-group">
               <label for="">To </label>
               <input type="date" id="to_date" class="form-control" />
             </div>
 
-            <button class="btn data-btn" id="to_date" onclick="rangeData()">
+            <button
+              class="btn submit-btn btn-primary"
+              id="to_date"
+              onclick="rangeData()"
+            >
               Submit
             </button>
           </div>
@@ -500,8 +506,18 @@
             <div class="col-md-6">
               <canvas
                 id="bestEmpChart"
-                style="width: 600px; height: 400px; object-fit: contain"
+                style="width: 100%; height: 400px; object-fit: contain"
               ></canvas>
+            </div>
+
+            <div class="card col-md-6">
+              <div class="card-header">Department wise meetings</div>
+              <div class="card-body">
+                <canvas
+                  id="deptWiseChart"
+                  style="width: 100%; height: 400px; object-fit: contain"
+                ></canvas>
+              </div>
             </div>
           </div>
         </div>
@@ -535,6 +551,7 @@
 
     <script src="../assets/js/argon.js?v=1.2.0"></script>
     <script src="https://cdn.jsdelivr.net/npm/chart.js@3.6.0/dist/chart.min.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/chartjs-plugin-datalabels@2.0.0"></script>
 
     <script src="https://unpkg.com/sweetalert/dist/sweetalert.min.js"></script>
     <script src="../config.js"></script>
@@ -550,6 +567,8 @@
       //     localStorage.getItem("userImageURL")
       // );
       // Initialize Firebase
+      Chart.register(ChartDataLabels);
+
       async function onLogout() {
         await firebase.auth().signOut();
         localStorage.clear();

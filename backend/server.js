@@ -16,6 +16,7 @@ var firebaseadmin = require("firebase-admin");
 
 var serviceAccount = require("./vistor-management-app-firebase.json");
 const adminModels = require("./models/adminModels");
+const httpstatus = require("http-status-codes");
 
 firebaseadmin.initializeApp({
   credential: firebaseadmin.credential.cert(serviceAccount),
@@ -42,7 +43,7 @@ const connect = async () => {
   });
 };
 
-connect().then();
+connect().then(() => {});
 
 let userBody = {
   email: "admin@gmail.com",

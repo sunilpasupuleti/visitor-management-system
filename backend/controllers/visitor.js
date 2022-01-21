@@ -264,12 +264,12 @@ module.exports = {
         status: "upcoming",
       }).count();
 
-      let visitorObjId = mongoose.Types.ObjectId(visitorId);
+      // let visitorId = mongoose.Types.ObjectId(visitorId);
 
       const totMeetDoneToday = await Meeting.aggregate([
         {
           $match: {
-            "visitor._id": visitorObjId,
+            "visitor._id": visitorId,
             status: "completed",
             $expr: {
               $and: [
@@ -298,7 +298,7 @@ module.exports = {
       const thisWeekMeetings = await Meeting.aggregate([
         {
           $match: {
-            "visitor._id": visitorObjId,
+            "visitor._id": visitorId,
             status: "completed",
             $expr: {
               $eq: [{ $week: "$meetingEndTime" }, { $week: new Date() }],
@@ -325,7 +325,7 @@ module.exports = {
       const thisMonthcompletedMeetings = await Meeting.aggregate([
         {
           $match: {
-            "visitor._id": visitorObjId,
+            "visitor._id": visitorId,
             status: "completed",
             $expr: {
               $and: [
@@ -348,7 +348,7 @@ module.exports = {
       const thisYearcompletedMeetings = await Meeting.aggregate([
         {
           $match: {
-            "visitor._id": visitorObjId,
+            "visitor._id": visitorId,
             status: "completed",
             $expr: {
               $eq: [{ $year: "$meetingEndTime" }, { $year: new Date() }],
@@ -372,7 +372,7 @@ module.exports = {
       let meetingsByMonthAndYear = await Meeting.aggregate([
         {
           $match: {
-            "visitor._id": visitorObjId,
+            "visitor._id": visitorId,
             status: "completed",
           },
         },

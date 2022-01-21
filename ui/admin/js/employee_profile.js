@@ -386,6 +386,7 @@ function openMeetingDetailsModal(mid) {
 
 async function searchFilter(e) {
   let filteredData;
+  employeeMeetings = AllemployeeMeetings;
 
   let searchText = e.target.value.toLowerCase().trim();
 

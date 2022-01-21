@@ -253,22 +253,22 @@
       });
 
       async function sendAdminData(reqUserData) {
-        await messaging
-          .requestPermission()
-          .then(function () {
-            console.log("Granted permission! ");
-            return messaging.getToken();
-          })
-          .then(function (tok) {
-            console.log("fcmToken--", tok);
-            reqUserData.fcmToken = tok;
-            localStorage.setItem("fcmToken", tok);
-            // sendAdminData(reqUserData);
-          })
-          .catch(function (err) {
-            console.log("error not granted -- ", err);
-            // sendAdminData(reqUserData);
-          });
+        // await messaging
+        //   .requestPermission()
+        //   .then(function () {
+        //     console.log("Granted permission! ");
+        //     return messaging.getToken();
+        //   })
+        //   .then(function (tok) {
+        //     console.log("fcmToken--", tok);
+        //     reqUserData.fcmToken = tok;
+        //     localStorage.setItem("fcmToken", tok);
+        //     // sendAdminData(reqUserData);
+        //   })
+        //   .catch(function (err) {
+        //     console.log("error not granted -- ", err);
+        //     // sendAdminData(reqUserData);
+        //   });
 
         console.log(reqUserData);
         fetch(URL + "/auth/adminLogin", {

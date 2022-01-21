@@ -10,15 +10,15 @@ const moment = require("moment");
 moment.suppressDeprecationWarnings = true;
 
 async function editMeetings(body, compId) {
-  let meetings = await Meeting.find({ company: compId });
+  let meetings = await Meeting.find({ "employee._id": body.empId });
   meetings.forEach(async (m) => {
-    const body = {
-      name: helper.capitalize(body.name),
-      email: body.email,
-      phone: body.phone,
-      department: body.department,
-      designation: helper.capitalize(body.designation),
-      image: body.image,
+    const changedBody = {
+      "employee.name": helper.capitalize(body.name),
+      "employee.email": body.email,
+      "employee.phone": body.phone,
+      "employee.department": body.department,
+      "employee.designation": helper.capitalize(body.designation),
+      "employee.image": body.image,
     };
 
     await Meeting.findOneAndUpdate(
@@ -26,13 +26,10 @@ async function editMeetings(body, compId) {
         _id: m._id,
       },
       {
-        $set: {
-          employee: { ...body },
-        },
+        $set: changedBody,
       },
       { new: true }
     ).then((result) => {});
-    console.log("iteration ");
   });
 }
 
@@ -183,22 +180,18 @@ module.exports = {
         status: "completed",
       });
 
-      meetings.map((e, index) => {
-        let raisedTime = moment(e.meetingRaisedTime).format(
-          "MMM DD , YYYY hh:mm:ss"
-        );
-        let endTime = moment(e.meetingEndTime).format("MMM DD , YYYY hh:mm:ss");
-        let diff = moment(endTime).diff(raisedTime);
-        meetings[index].duration = moment(diff).format("hh:mm:ss");
-      });
+      if (meetings.length > 0) {
+        longestMeeting = meetings.reduce((prev, current) => {
+          return prev.duration > current.duration ? prev : current;
+        });
 
-      longestMeeting = meetings.reduce((prev, current) => {
-        return prev.duration > current.duration ? prev : current;
-      });
-
-      shortestMeeting = meetings.reduce((prev, current) => {
-        return prev.duration < current.duration ? prev : current;
-      });
+        shortestMeeting = meetings.reduce((prev, current) => {
+          return prev.duration < current.duration ? prev : current;
+        });
+      } else {
+        longestMeeting = "0";
+        shortestMeeting = "0";
+      }
 
       const totalMeetingsDoneToday = await Meeting.aggregate([
         {
@@ -280,6 +273,7 @@ module.exports = {
         });
       })
       .catch((err) => {
+        console.log(err);
         res.status(httpstatus.INTERNAL_SERVER_ERROR).json({ message: err });
       });
   },
@@ -507,7 +501,8 @@ module.exports = {
             },
             { new: true }
           )
-            .then((result) => {
+            .then(async (result) => {
+              await editMeetings(req.body, req.user.company._id);
               res.status(httpstatus.OK).json({
                 message: "Employee updated successfully : ",
                 employee: result,
@@ -531,12 +526,13 @@ module.exports = {
         },
         { new: true }
       )
-        .then((result) => {
+        .then(async (result) => {
+          await editMeetings(req.body, req.user.company._id);
+
           res.status(httpstatus.OK).json({
             message: "Employee updated successfully : ",
             employee: result,
           });
-          editMeetings(req.body, req.user.company._id);
         })
         .catch((err) => {
           res.status(httpstatus.INTERNAL_SERVER_ERROR).json({ message: err });

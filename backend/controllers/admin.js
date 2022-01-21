@@ -127,9 +127,29 @@ module.exports = {
       ]);
 
       upComingMeetingsToday = todayUpcomingMeetings.length;
-
       // total meetings done today
+
       if (custom === "true") {
+        let departments = {};
+        const meetings = await Meeting.find({
+          company: company,
+          status: "completed",
+          meetingEndTime: {
+            $gte: new Date(+startTime),
+            $lt: new Date(+endTime),
+          },
+        });
+
+        meetings.forEach(async (m) => {
+          departments[m.employee.department] = 0;
+        });
+
+        meetings.forEach(async (m) => {
+          departments[m.employee.department] += 1;
+        });
+
+        body.departmentWiseMeetings = departments;
+
         const totMeetDone = await Meeting.find({
           company: company,
 
@@ -164,6 +184,22 @@ module.exports = {
         body.totalRejectedMeetingsDoneLength = totRejDone.length;
         body.totalRescheduledMeetingsDoneLength = totResDone.length;
       } else {
+        let departments = {};
+        const meetings = await Meeting.find({
+          company: company,
+          status: "completed",
+        });
+
+        meetings.forEach(async (m) => {
+          departments[m.employee.department] = 0;
+        });
+
+        meetings.forEach(async (m) => {
+          departments[m.employee.department] += 1;
+        });
+
+        body.departmentWiseMeetings = departments;
+
         const totMeetDone = await Meeting.find({
           company: company,
 
@@ -403,36 +439,46 @@ module.exports = {
           $match: { company: company, status: "completed" },
         },
         {
-          $group: { _id: "$employee", count: { $sum: 1 } },
+          $group: {
+            _id: "$employee._id",
+            meetingData: { $first: "$$CURRENT" },
+            count: { $sum: 1 },
+          },
         },
         {
           $sort: { count: -1 },
         },
 
-        // {
-        //   $lookup: {
-        //     from: "meetings",
-        //     localField: "_id",
-        //     foreignField: "employee",
-        //     as: "Employees data",
-        //   },
-        // },
+        {
+          $lookup: {
+            from: "meetings",
+            localField: "_id",
+            foreignField: "_id",
+            as: "Meeting data",
+          },
+        },
       ]);
 
       groupedMeetingsData.forEach(async (element) => {
-        await Employee.findOne({
+        let data = await Employee.findOne({
           _id: element._id,
-        }).then((data) => {
+        });
+        if (data) {
           element.emp = {
             name: data.name,
             email: data.email,
           };
           element["empId"] = element["_id"]; //rename field _id to empId after assigning new value delete old key
           delete element["_id"];
-        });
+        } else {
+          element.emp = {
+            name: element.meetingData.employee.name,
+            email: element.meetingData.employee.email,
+          };
+          element["empId"] = element["_id"]; //rename field _id to empId after assigning new value delete old key
+          delete element["_id"];
+        }
       });
-
-      employeeListSortedByMeetings = groupedMeetingsData;
 
       // no of visitor
 
@@ -453,6 +499,8 @@ module.exports = {
         totalEmployees: noOfEmployees,
         employeeListSortedByMeetings: groupedMeetingsData,
       };
+
+      // console.log(body.groupedMeetingsData);
     };
 
     details()
