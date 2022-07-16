@@ -27,7 +27,7 @@ dist/
 .idea/
 
 #env file
-.env
+*.env
 
 # Unit test reports
 TEST*.xml
