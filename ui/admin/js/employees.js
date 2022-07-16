@@ -390,7 +390,7 @@ async function searchFilter(e) {
         e.name.toLowerCase().includes(searchText) ||
         e.phone.toLowerCase().includes(searchText) ||
         e.email.toLowerCase().includes(searchText) ||
-        e.title.toLowerCase().includes(searchText) ||
+        e.designation.toLowerCase().includes(searchText) ||
         e.password.toLowerCase().includes(searchText) ||
         e.department.toString().includes(searchText) ||
         e.totalMeetingsDone.toString().toLowerCase().includes(searchText) ||

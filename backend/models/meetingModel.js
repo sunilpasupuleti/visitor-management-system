@@ -24,6 +24,7 @@ const meetingsSchema = mongoose.Schema(
     meetingMinutesNotes: { type: String },
     purpose: { type: String },
     vehicleNumber: { type: String },
+    rejectedReasons: { type: String },
     gateExitTime: { type: Date },
     company: { type: mongoose.Schema.Types.ObjectId, ref: "Company" },
     counterEndTime: { type: Date },

@@ -5,6 +5,7 @@
   width: 70px;
   height: 70px;
   animation: spin 1s linear infinite;
+  z-index: 9999;
 }
 .mini-loader {
   border: 4px solid #f3f3f3;
@@ -41,7 +42,17 @@
   margin: auto;
 }
 
+.center.full {
+  left: 0px;
+}
+
 .card-icons {
   width: 40px;
   height: 40px;
+}
+
+@media (max-width: 968px) {
+  .center {
+    left: 0px;
+  }
 }

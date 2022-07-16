@@ -8,29 +8,64 @@ const helper = require("../helpers/helpers");
 const firebase = require("firebase-admin");
 const jwt = require("jsonwebtoken");
 const companyModels = require("../models/companyModels");
+const multer = require("multer");
+
+function returnUrl(tempId, mobile, otp) {
+  let path =
+    "https://api.msg91.com/api/v5/otp?template_id=" +
+    tempId +
+    "&mobile=" +
+    mobile +
+    "&authkey=" +
+    process.env.MSG91_AUTHKEY +
+    "&otp=" +
+    otp;
+  return path;
+}
 
 module.exports = {
   async searchVisitorNumber(req, res) {
-    var phoneno = /^\(?([0-9]{3})\)?[-. ]?([0-9]{3})[-. ]?([0-9]{4})$/;
+    var phoneno = /^91[6-9]\d{9}$/;
+
     if (!req.query.phone.match(phoneno)) {
-      return res
-        .status(httpstatus.CONFLICT)
-        .json({ message: "Invalid phone number" });
+      return res.status(httpstatus.CONFLICT).json({
+        message:
+          "Invalid phone number provided, provide valid number ex. 91 9876567890",
+      });
     }
 
     await Visitor.findOne({
       phone: req.query.phone,
     })
       .populate("company")
-      .then((result) => {
+      .then(async (result) => {
         if (!result) {
-          var otp = "123456";
-          // sending otp..........
-          return res.status(httpstatus.OK).json({
-            message: "Otp was sent successfully  : ",
-            otp,
-            visitor: result,
-          });
+          var otp = Math.floor(1000 + Math.random() * 9000);
+          let otpUrl = returnUrl(
+            process.env.MSG91_TEMPLATEID,
+            req.query.phone,
+            otp
+          );
+          var values = {
+            COMPANY_NAME: "VMS",
+            WEBSITE_URL: "vms.webwizard.in",
+          };
+          const axios = require("axios");
+          axios
+            .post(otpUrl, JSON.stringify(values))
+            .then((response) => {
+              return res.status(httpstatus.OK).json({
+                message: "Otp was sent successfully  : ",
+                otp,
+                visitor: result,
+              });
+            })
+            .catch((err) => {
+              return res.status(httpstatus.INTERNAL_SERVER_ERROR).json({
+                message: "Error : in sending otp",
+                err,
+              });
+            });
         } else {
           const token = jwt.sign({ data: result }, process.env.SECRETS, {
             expiresIn: "1h",
@@ -50,6 +85,36 @@ module.exports = {
 
   async resendOtp(req, res) {
     // resend otp functionality
+    var phoneno = /^91[6-9]\d{9}$/;
+
+    if (!req.query.phone.match(phoneno)) {
+      return res.status(httpstatus.CONFLICT).json({
+        message: "Invalid phone number provide with ex. 919876567890",
+      });
+    }
+
+    var otp = Math.floor(1000 + Math.random() * 9000);
+    let otpUrl = returnUrl(process.env.MSG91_TEMPLATEID, req.query.phone, otp);
+    var values = {
+      COMPANY_NAME: "VMS",
+      WEBSITE_URL: "vms.webwizard.in",
+    };
+    const axios = require("axios");
+    axios
+      .post(otpUrl, JSON.stringify(values))
+      .then((response) => {
+        return res.status(httpstatus.OK).json({
+          message: "Otp was sent successfully  : ",
+          otp,
+        });
+      })
+      .catch((err) => {
+        console.log(err);
+        return res.status(httpstatus.INTERNAL_SERVER_ERROR).json({
+          message: "Error : in sending otp",
+          err,
+        });
+      });
   },
 
   async saveVisitor(req, res) {
@@ -78,7 +143,8 @@ module.exports = {
         .json({ message: "All fields required" });
     }
 
-    var phoneno = /^\(?([0-9]{3})\)?[-. ]?([0-9]{3})[-. ]?([0-9]{4})$/;
+    var phoneno = /^91[6-9]\d{9}$/;
+
     if (!phone.match(phoneno)) {
       return res
         .status(httpstatus.CONFLICT)
@@ -100,6 +166,17 @@ module.exports = {
         message: "Company Id is invalid : ",
       });
     }
+
+    if (
+      companyExists &&
+      companyExists.flow &&
+      companyExists.flow !== "normal"
+    ) {
+      return res
+        .status(httpstatus.NOT_ACCEPTABLE)
+        .json({ message: "Flow mismatch" });
+    }
+
     const visitorDetails = {
       name: helper.capitalize(req.body.name),
       phone: req.body.phone,
@@ -109,6 +186,7 @@ module.exports = {
       selfieLink,
       company,
       companyName,
+      role: "visitor",
     };
 
     // send otp functionality remaining
@@ -133,6 +211,160 @@ module.exports = {
           .status(httpstatus.INTERNAL_SERVER_ERROR)
           .json({ message: err });
       });
+    // });
+  },
+
+  async saveVisitorWeb(req, res) {
+    const bucket = firebase.storage().bucket();
+    const upload = multer({
+      storage: multer.memoryStorage(),
+    }).single("doc-proof");
+
+    upload(req, res, async (err) => {
+      // for uploading document proof
+
+      const { name, company, address, selfie, idType, phone, companyName } =
+        req.body;
+      if (
+        !name ||
+        !company ||
+        !companyName ||
+        !phone ||
+        !address ||
+        !selfie ||
+        !idType
+      ) {
+        return res
+          .status(httpstatus.CONFLICT)
+          .json({ message: "All fields required" });
+      }
+
+      if (!req.file) {
+        return res
+          .status(httpstatus.CONFLICT)
+          .json({ message: "File required" });
+      }
+
+      var phoneno = /^91[6-9]\d{9}$/;
+
+      if (!phone.match(phoneno)) {
+        return res
+          .status(httpstatus.CONFLICT)
+          .json({ message: "Invalid phone number" });
+      }
+
+      var exists = await Visitor.findOne({
+        phone: phone,
+      });
+      if (exists) {
+        return res
+          .status(httpstatus.CONFLICT)
+          .json({ message: "Visitor already exists" });
+      }
+      if (company.length < 24) {
+        return res.status(httpstatus.NOT_ACCEPTABLE).json({
+          message: "Company Id is invalid : ",
+        });
+      }
+
+      var companyExists = await companyModels.findOne({
+        _id: company,
+      });
+
+      if (!companyExists) {
+        return res.status(httpstatus.NOT_ACCEPTABLE).json({
+          message: "Company Id is invalid : ",
+        });
+      }
+
+      if (
+        companyExists &&
+        companyExists.flow &&
+        companyExists.flow !== "qrcode"
+      ) {
+        return res
+          .status(httpstatus.NOT_ACCEPTABLE)
+          .json({ message: "Flow mismatch" });
+      }
+
+      const visitorDetails = {
+        name: helper.capitalize(req.body.name),
+        phone: req.body.phone,
+        address,
+        idType,
+        company,
+        companyName,
+        role: "visitor",
+      };
+
+      let documentProof = req.file;
+      const docFileName = +new Date() + "-" + documentProof.originalname;
+      const documentBlob = bucket.file("document-proofs/" + docFileName);
+      const documentBlobWriter = documentBlob
+        .createWriteStream({
+          public: true,
+        })
+        .end(documentProof.buffer);
+
+      documentBlobWriter.on("error", (err) => {
+        console.log(err.stack, "error in document uploading");
+        return res.status(httpstatus.CONFLICT).json({
+          message: "Sorry error occured while uploading the files.",
+        });
+      });
+
+      documentBlobWriter.on("finish", async () => {
+        console.log(documentBlob.publicUrl());
+        visitorDetails.idLink = documentBlob.publicUrl();
+        // for uploading selfie
+
+        const selfieFileName = +new Date() + ".jpeg";
+        const selfieBlob = bucket.file("selfie-images/" + selfieFileName);
+        const selfieBlobWriter = selfieBlob
+          .createWriteStream({
+            public: true,
+            contentType: "image/jpeg",
+          })
+          .end(Buffer.from(selfie, "base64"));
+
+        selfieBlobWriter.on("error", (err) => {
+          console.log(err.stack, "error in document uploading");
+          return res.status(httpstatus.CONFLICT).json({
+            message: "Sorry error occured while uploading the files.",
+          });
+        });
+
+        selfieBlobWriter.on("finish", async () => {
+          console.log(selfieBlob.publicUrl());
+          visitorDetails.selfieLink = selfieBlob.publicUrl();
+
+          await Visitor.create(visitorDetails)
+            .then(async (result) => {
+              let details = await Visitor.findOne({ _id: result._id }).populate(
+                "company"
+              );
+              const token = jwt.sign({ data: details }, process.env.SECRETS, {
+                expiresIn: "1h",
+              });
+
+              return res.status(httpstatus.OK).json({
+                message: "Visitor created successfully : ",
+                visitor: details,
+                token,
+              });
+            })
+            .catch((err) => {
+              return res
+                .status(httpstatus.INTERNAL_SERVER_ERROR)
+                .json({ message: err });
+            });
+        });
+      });
+
+      // console.log(selfie);
+      // console.log(Buffer.from(selfie, "base64"));
+    });
+
     // });
   },
 

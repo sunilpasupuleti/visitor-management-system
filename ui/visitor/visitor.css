@@ -1,0 +1,81 @@
+.welcome-back {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  justify-content: space-between;
+  gap: 1rem;
+}
+
+body {
+  background-color: #fff;
+}
+
+#selfieImage {
+  height: 150px;
+  width: 150px;
+  border-radius: 50%;
+}
+
+.form-check {
+  display: flex;
+  width: 100%;
+  justify-content: space-between;
+  gap: 1rem;
+}
+
+.form-check label {
+  color: #000;
+  margin-left: 1rem;
+  padding-top: 3px;
+}
+
+.form-check input {
+  height: 20px !important;
+  width: 20px;
+}
+
+.additional-members-button {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 1rem;
+  align-items: center;
+  justify-content: space-between;
+}
+
+.members {
+  margin-top: 2rem;
+  background-color: #fff;
+}
+
+.member {
+  display: flex;
+  justify-content: space-between;
+  border-bottom: 1px solid #ccc;
+  padding: 1rem 1rem;
+}
+
+.member span {
+  color: #aaa;
+  margin-right: 0.5rem;
+}
+.member .delete-icon {
+  color: tomato;
+  padding-top: 5px;
+  cursor: pointer;
+}
+
+tbody tr:nth-child(even) {
+  background-color: rgba(0, 0, 0, 0.03);
+}
+
+tbody tr:hover {
+  background-color: rgba(0, 0, 0, 0.03);
+}
+
+tbody tr.disabled .vacation {
+  color: tomato;
+}
+
+tbody tr .vacation {
+  color: green;
+}

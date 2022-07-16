@@ -16,12 +16,12 @@ var firebaseadmin = require("firebase-admin");
 
 var serviceAccount = require("./vistor-management-app-firebase.json");
 const adminModels = require("./models/adminModels");
-const httpstatus = require("http-status-codes");
 
+dotenv.config();
 firebaseadmin.initializeApp({
   credential: firebaseadmin.credential.cert(serviceAccount),
-  databaseURL: "https://v-m-s-928ee-default-rtdb.firebaseio.com",
-  storageBucket: "v-m-s-928ee.appspot.com",
+  databaseURL: process.env.FIREBASE_DATABASE_URL,
+  storageBucket: process.env.FIREBASE_STORAGE_BUCKET,
 });
 
 process.on("uncaughtException", (error, origin) => {
@@ -70,13 +70,18 @@ firebaseadmin
   })
   .catch((err) => {});
 
-dotenv.config();
-
 const app = express();
 
 app.use("", express.static(path.join(__dirname, "ui")));
 
-app.use(cors());
+app.use(
+  cors({
+    credentials: true,
+    origin: [process.env.FRONTEND_URL, "http://127.0.0.1:5500"],
+    // allowedHeaders: ["Content-Type", "Authorization", "x-csrf-token"],
+  })
+);
+
 app.use(express.json({ limit: "50mb" }));
 app.use(express.urlencoded({ extended: true, limit: "50mb" }));
 
@@ -88,14 +93,6 @@ app.use("/meeting", meeting);
 app.use("/company", company);
 
 const http = require("http").Server(app);
-
-const io = require("socket.io")(http, {
-  cors: {
-    origin: "*",
-  },
-});
-
-require("./sockets/streams")(io);
 
 http.listen(process.env.PORT || 8080, () => {
   console.log(`server started on port number ${process.env.PORT}`);

@@ -1,0 +1,383 @@
+<!DOCTYPE html>
+<html>
+  <head>
+    <meta charset="utf-8" />
+    <meta
+      name="viewport"
+      content="width=device-width, initial-scale=1, shrink-to-fit=no"
+    />
+    <meta name="Notarised Docs" content="Notarised Docs" />
+    <meta name="Notarised Docs" content="Notarised Docs" />
+    <title>Scheudle Meeting</title>
+    <link rel="stylesheet" href="../assets/css/fonts.css" />
+    <!-- Favicon -->
+    <link rel="icon" href="../assets/img/brand/favicon.png" type="image/png" />
+    <!-- Fonts -->
+
+    <!-- Icons -->
+    <link
+      rel="stylesheet"
+      href="../assets/vendor/nucleo/css/nucleo.css"
+      type="text/css"
+    />
+    <link
+      rel="stylesheet"
+      href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.15.2/css/all.min.css"
+      type="text/css"
+    />
+    <!-- Page plugins -->
+    <!-- Argon CSS -->
+    <link
+      rel="stylesheet"
+      href="../assets/css/argon.css?v=1.2.0"
+      type="text/css"
+    />
+    <link rel="stylesheet" href="../admin/css/loader.css" />
+    <link rel="stylesheet" href="../admin/css/animation.css" />
+    <link
+      rel="stylesheet"
+      href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.15.3/css/all.min.css
+    "
+    />
+    <link rel="stylesheet" href="../admin/js/chips/css/amsify.suggestags.css" />
+    <link rel="stylesheet" href="../admin/css/main.css" />
+    <link rel="stylesheet" href="./visitor.css" />
+  </head>
+
+  <body>
+    <div id="loader" class="center"></div>
+
+    <!-- <div class="mobile-nav">
+      <div class="navbar navbar-expand-xl bg-white navbar-light">
+        <div
+          class="navbar-brand"
+          onclick="(function(){location.href='/admin/index.html'})();"
+        >
+          VMS
+        </div>
+
+        <button
+          class="navbar-toggler"
+          type="button"
+          data-toggle="collapse"
+          data-target="#collapsibleNavbar"
+        >
+          <span class="navbar-toggler-icon"></span>
+        </button>
+
+        <div class="collapse navbar-collapse" id="collapsibleNavbar">
+          <ul class="navbar-nav mt-3">
+            <li class="nav-item">
+              <a id="dashboard" class="nav-link" href="index.html">
+                <span>Dashboard</span>
+                <i class="fas fa-tv"></i>
+              </a>
+            </li>
+
+            <li class="nav-item ismaster-link">
+              <a id="company" class="nav-link" href="index.html">
+                <span>Schedule Meeting</span>
+                <i class="far fa-handshake"></i>
+              </a>
+            </li>
+          </ul>
+        </div>
+      </div>
+    </div> -->
+
+    <!-- Sidenav -->
+
+    <div class="main mt-5">
+      <!-- Main content -->
+      <div class="main-content" id="panel">
+        <!-- Page content -->
+        <div class="container details-panel">
+          <div class="welcome-back">
+            <div>
+              <img src="" id="selfieImage" alt="hey" />
+            </div>
+            <h1>Hello <span id="name"></span>, Welcome back.</h1>
+          </div>
+
+          <form onsubmit="onScheduleNow(event)">
+            <div
+              style="
+                display: flex;
+                align-items: center;
+                flex-wrap: wrap;
+                justify-content: space-between;
+                margin-top: 30px;
+              "
+            >
+              <h1>Schedule Meeting form</h1>
+              <button type="submit" class="btn btn-primary">
+                Schedule Now
+              </button>
+            </div>
+
+            <hr />
+
+            <!-- Modal body -->
+            <div class="modal-body">
+              <div class="row">
+                <div class="col-lg-6">
+                  <div class="row form-group">
+                    <div class="col-lg-12">
+                      <label class="form-control-label mr-3" for="purpose"
+                        >Purpose *
+                      </label>
+                      <input
+                        class="form-control"
+                        id="purpose"
+                        name="purpose"
+                        type="text"
+                        value="Simple Visit"
+                        placeholder="Enter your purpose of visit"
+                        required
+                      />
+                    </div>
+                  </div>
+                </div>
+
+                <div class="col-lg-6">
+                  <div class="row form-group">
+                    <div class="col-lg-12">
+                      <label class="form-control-label mr-3" for="veh-num"
+                        >Vehicle Number
+                      </label>
+                      <input
+                        class="form-control"
+                        id="veh-num"
+                        name="veh-num"
+                        type="text"
+                        value=""
+                        placeholder="Enter your vehicle number"
+                      />
+                    </div>
+                  </div>
+                </div>
+
+                <div class="col-lg-12">
+                  <div class="row form-group">
+                    <div class="col-lg-12">
+                      <label class="form-control-label mr-3"
+                        >Choose your belongings
+                      </label>
+                    </div>
+                  </div>
+                </div>
+
+                <div class="col-lg-6 col-sm-12">
+                  <div class="form-check">
+                    <label class="form-check-label"> Laptop/Mobile </label>
+                    <input
+                      type="checkbox"
+                      class="form-check-input belongings"
+                      value="Laptop/Mobile"
+                    />
+                  </div>
+                  <div class="form-check mt-2">
+                    <label class="form-check-label"> Vehicle </label>
+                    <input
+                      type="checkbox"
+                      class="form-check-input belongings"
+                      value="Vehicle"
+                    />
+                  </div>
+                  <div class="form-check mt-2">
+                    <label class="form-check-label"> Others </label>
+                    <input
+                      type="checkbox"
+                      class="form-check-input belongings"
+                      value="Others"
+                    />
+                  </div>
+                </div>
+
+                <div class="col-lg-6 col-sm-12">
+                  <div class="additional-members-button">
+                    <div>Additional members</div>
+                    <button
+                      type="button"
+                      class="btn btn-secondary"
+                      data-toggle="modal"
+                      data-target="#addMemberModal"
+                    >
+                      <i class="fas fa-plus mr-2"></i> Add Member
+                    </button>
+                  </div>
+
+                  <div class="members">
+                    <!-- <div class="member">
+                      <h3><span>1. </span>sunil kumar</h3>
+                      <p>919959907940</p>
+                      <i class="fas fa-trash fa-sm delete-icon"></i>
+                    </div> -->
+                  </div>
+                </div>
+              </div>
+            </div>
+          </form>
+
+          <div class="modal fade" id="addMemberModal">
+            <div class="modal-dialog">
+              <div class="modal-content">
+                <!-- Modal body -->
+                <div class="modal-body">
+                  <div class="row">
+                    <div class="col-lg-12">
+                      <div class="row form-group d-flex">
+                        <div class="col-xl-12">
+                          <label class="form-control-label mr-3" for="com-name"
+                            >Name
+                          </label>
+                          <input
+                            class="form-control"
+                            id="mem-name"
+                            name="mem-name"
+                            type="text"
+                            value=""
+                            placeholder="Enter person name"
+                          />
+                        </div>
+                      </div>
+                    </div>
+
+                    <div class="col-lg-12">
+                      <div class="row form-group d-flex">
+                        <div class="col-xl-12">
+                          <label class="form-control-label mr-3" for="com-add"
+                            >Phone Number
+                          </label>
+                          <input
+                            class="form-control"
+                            id="mem-phone"
+                            name="mem-phone"
+                            type="text"
+                            maxlength="12"
+                            value=""
+                            placeholder="Enter mobile number"
+                          />
+                        </div>
+                      </div>
+                    </div>
+
+                    <div class="col-md-12">
+                      <p id="error-msg" class="text-danger"></p>
+                    </div>
+                  </div>
+                </div>
+
+                <!-- Modal footer -->
+                <div class="modal-footer">
+                  <button
+                    type="button"
+                    class="btn btn-secondary"
+                    data-dismiss="modal"
+                  >
+                    Close
+                  </button>
+                  <button
+                    type="button"
+                    class="btn btn-primary"
+                    onclick="addMember()"
+                  >
+                    Add Member
+                  </button>
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+
+        <div class="meeting-panel">
+          <div class="text-center">
+            <h2>Click on a employee to schedule the meeting</h2>
+
+            <a
+              onclick="onChangeDetails()"
+              style="
+                text-align: center !important;
+                color: skyblue;
+                cursor: pointer;
+              "
+              >Go back to change details?</a
+            >
+          </div>
+
+          <div class="mt-3" id="panel">
+            <div class="row card-header d-flex mx-2 my-2">
+              <div class="col-lg-12 mt-3 mb-2">
+                <div class="form-group">
+                  <input
+                    id="searchValue"
+                    name="input-notary-name"
+                    class="form-control text-default"
+                    placeholder="Search by keywords... "
+                    type="search"
+                    oninput="searchFilter(event)"
+                  />
+                </div>
+              </div>
+
+              <div class="col-md-12 mt-4">
+                <div class="table-flush">
+                  <div class="table-responsive">
+                    <table class="table align-items-center" id="clients-table">
+                      <thead class="thead">
+                        <tr>
+                          <th><b class="text-dark">S.NO</b></th>
+                          <th><b class="text-dark">IMAGE</b></th>
+                          <th><b class="text-dark">NAME</b></th>
+                          <th><b class="text-dark">DEPARTMENT</b></th>
+                          <th><b class="text-dark">DESIGNATION</b></th>
+                          <th><b class="text-dark">EMAIL</b></th>
+                          <th><b class="text-dark">ON VACTION MODE</b></th>
+                        </tr>
+                      </thead>
+                      <tbody class="list employees-list"></tbody>
+                    </table>
+                  </div>
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+    <!-- Argon Scripts -->
+    <!-- Core -->
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/jquery/3.6.0/jquery.min.js"></script>
+    <script src="../assets/vendor/bootstrap/dist/js/bootstrap.bundle.min.js"></script>
+    <script src="../assets/vendor/js-cookie/js.cookie.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/jquery.scrollbar/0.2.11/jquery.scrollbar.min.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/jquery-scroll-lock@3.1.3/jquery-scrollLock.min.js"></script>
+
+    <!-- firebase -->
+    <script src="https://www.gstatic.com/firebasejs/8.2.9/firebase-app.js"></script>
+    <script src="https://www.gstatic.com/firebasejs/8.2.8/firebase-auth.js"></script>
+    <script src="https://www.gstatic.com/firebasejs/8.8.1/firebase-analytics.js"></script>
+    <script src="https://www.gstatic.com/firebasejs/8.2.9/firebase-messaging.js"></script>
+
+    <!-- firebase config end -->
+
+    <script
+      src="https://cdnjs.cloudflare.com/ajax/libs/moment.js/2.29.1/moment.min.js"
+      integrity="sha512-qTXRIMyZIFb8iQcfjXWCO8+M5Tbc38Qi5WzdPOYZHIlZpzBHG3L3by84BBBOiRGiEb7KKtAOAs5qYdUiZiQNNQ=="
+      crossorigin="anonymous"
+      referrerpolicy="no-referrer"
+    ></script>
+
+    <script src="../assets/js/argon.js?v=1.2.0"></script>
+    <script src="https://unpkg.com/sweetalert/dist/sweetalert.min.js"></script>
+    <script src="../config.js"></script>
+    <script src="../admin/js/loader.js"></script>
+    <script src="../admin/js/master_links.js"></script>
+    <script src="./visitor.js"></script>
+
+    <script>
+      // $(".profile-username").html(`${payload.name}`);
+      // $(".profile-picture").html(payload.name.charAt(0));
+    </script>
+  </body>
+</html>

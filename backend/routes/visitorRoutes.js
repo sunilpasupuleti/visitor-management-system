@@ -6,6 +6,9 @@ const visitorCtrl = require("../controllers/visitor");
 
 router.post("/saveVisitor", visitorCtrl.saveVisitor);
 
+// for web api
+router.post("/saveVisitorWeb", visitorCtrl.saveVisitorWeb);
+
 router.get("/searchVisitor", visitorCtrl.searchVisitorNumber);
 
 router.get("/resendOtp", visitorCtrl.resendOtp);

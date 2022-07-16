@@ -1,0 +1,368 @@
+<!--
+=========================================================
+* Argon Dashboard - v1.2.0
+=========================================================
+* Product Page: https://www.creative-tim.com/product/argon-dashboard
+
+
+* Copyright  Creative Tim (http://www.creative-tim.com)
+* Coded by www.creative-tim.com
+
+
+
+=========================================================
+* The above copyright notice and this permission notice shall be included in all copies or substantial portions of the Software.
+-->
+<!DOCTYPE html>
+<html>
+  <head>
+    <meta charset="utf-8" />
+    <meta
+      name="viewport"
+      content="width=device-width, initial-scale=1, shrink-to-fit=no"
+    />
+    <meta name="Notarised Docs" content="Notarised Docs" />
+    <meta name="Notarised Docs" content="Notarised Docs" />
+    <title>Register Visitor</title>
+    <link rel="stylesheet" href="../../assets/css/fonts.css" />
+    <!-- Favicon -->
+    <link
+      rel="icon"
+      href="../../assets/img/brand/favicon.png"
+      type="image/png"
+    />
+    <!-- Fonts -->
+
+    <!-- Icons -->
+    <link
+      rel="stylesheet"
+      href="../../assets/vendor/nucleo/css/nucleo.css"
+      type="text/css"
+    />
+    <link
+      rel="stylesheet"
+      href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.15.2/css/all.min.css"
+      type="text/css"
+    />
+    <!-- Page plugins -->
+    <!-- Argon CSS -->
+    <link
+      rel="stylesheet"
+      href="../../assets/css/argon.css?v=1.2.0"
+      type="text/css"
+    />
+    <link rel="stylesheet" href="../../admin/css/loader.css" />
+    <link rel="stylesheet" href="../../admin/css/animation.css" />
+    <link
+      rel="stylesheet"
+      href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.15.3/css/all.min.css
+    "
+    />
+    <link
+      rel="stylesheet"
+      href="../../admin/js/chips/css/amsify.suggestags.css"
+    />
+    <link rel="stylesheet" href="../../admin/css/main.css" />
+  </head>
+
+  <body class="white">
+    <div id="loader" class="center full"></div>
+
+    <!-- Sidenav -->
+
+    <div class="main" id="panel">
+      <!-- Main content -->
+      <div class="card-header mx-2 my-2" id="registerForm">
+        <!-- Page content -->
+        <div class="mt-3">
+          <!-- Modal Header -->
+
+          <form method="post" onsubmit="onRegisterVisitor(event)">
+            <div
+              style="
+                display: flex;
+                align-items: center;
+                flex-wrap: wrap;
+                justify-content: space-between;
+              "
+            >
+              <h1 class="ml-4">Visitor Registration form</h1>
+              <button type="submit" class="btn btn-primary">Register</button>
+            </div>
+
+            <hr />
+
+            <!-- Modal body -->
+            <div class="modal-body">
+              <div class="row">
+                <div class="col-lg-6">
+                  <div class="row form-group">
+                    <div class="col-lg-12">
+                      <label class="form-control-label mr-3" for="name"
+                        >Name
+                      </label>
+                      <input
+                        class="form-control"
+                        id="name"
+                        name="name"
+                        type="text"
+                        value=""
+                        placeholder="Enter your name"
+                      />
+                    </div>
+                  </div>
+                </div>
+
+                <div class="col-lg-6">
+                  <div class="row form-group">
+                    <div class="col-lg-12">
+                      <label class="form-control-label mr-3" for="com-name"
+                        >Company Name
+                      </label>
+                      <input
+                        class="form-control"
+                        id="com-name"
+                        name="com-name"
+                        type="text"
+                        value=""
+                        placeholder="Enter your company name"
+                      />
+                    </div>
+                  </div>
+                </div>
+
+                <div class="col-lg-12">
+                  <div class="row form-group d-flex">
+                    <div class="col-xl-12">
+                      <label class="form-control-label mr-3" for="address"
+                        >Address
+                      </label>
+                      <input
+                        class="form-control"
+                        id="address"
+                        name="address"
+                        type="text"
+                        value=""
+                        placeholder="Enter your address"
+                      />
+                    </div>
+                  </div>
+                </div>
+
+                <div class="col-lg-4 col-sm-12">
+                  <div class="form-group">
+                    <select class="form-control" name="doc-type" id="doc-type">
+                      <option value="" selected>Select Document Type</option>
+                      <option value="Aadhar Card">Aadhar</option>
+                      <option value="Pan Card">Pan Card</option>
+                      <option value="Driving License">Driving License</option>
+                      <option value="ID Card">ID Card</option>
+
+                      <!-- append from javascript departments fetch from backedn -->
+                    </select>
+                  </div>
+                </div>
+                <div class="col-lg-4 col-sm-12">
+                  <div class="row form-group d-flex">
+                    <div class="col-xl-12">
+                      <input
+                        class="form-control inputfile"
+                        id="doc-proof"
+                        name="doc-proof"
+                        type="file"
+                        value=""
+                        accept="image/*"
+                        onchange="onChangeInputFile(event, 'doc-proof-input-label')"
+                      />
+                      <label class="form-control-label mr-3" for="doc-proof">
+                        <i class="fas fa-upload"></i>
+                        <span class="ml-3 doc-proof-input-label"
+                          >Upload Document</span
+                        >
+                      </label>
+                    </div>
+                    <p class="ml-3">Only image type files are accepted</p>
+                  </div>
+                </div>
+
+                <div class="col-lg-4 col-sm-12">
+                  <button
+                    type="button"
+                    id="startCamera"
+                    class="btn btn-primary mt-1 w-100"
+                  >
+                    Start Capturing Selfie
+                  </button>
+                  <button
+                    type="button"
+                    class="btn btn-lg btn-primary mt-1"
+                    id="captureSelfie"
+                  >
+                    Capture Selfie
+                  </button>
+                  <button
+                    type="button"
+                    onclick="onRetakeSelfie()"
+                    id="retakeSelfie"
+                    class="btn btn-secondary mt-1"
+                  >
+                    Retake Selfie
+                  </button>
+                </div>
+
+                <div class="col-lg-4 col-sm-12 ml-auto">
+                  <canvas id="selfie" width="320" height="240"></canvas>
+                  <video id="selfieStream" autoplay></video>
+                </div>
+              </div>
+            </div>
+          </form>
+        </div>
+      </div>
+
+      <div class="modal fade" id="phoneModal">
+        <div class="modal-dialog">
+          <div class="modal-content">
+            <!-- Modal Header -->
+            <div class="modal-header">
+              <h4 class="modal-title">Welcome</h4>
+            </div>
+
+            <form onsubmit="onSearchVisitor(event)">
+              <!-- Modal body -->
+              <div class="modal-body">
+                <p>Please enter your Phone Number to continue</p>
+                <br />
+                <div class="row">
+                  <div class="col-lg-12">
+                    <div class="row form-group">
+                      <div class="col-xl-12">
+                        <label class="form-control-label mr-3" for="phone"
+                          >Phone Number (Enter prefix country code)
+                        </label>
+                        <input
+                          class="form-control"
+                          id="phone"
+                          name="phone"
+                          type="tel"
+                          value=""
+                          placeholder="Ex : 91 XXXXXXXXXX"
+                          required
+                        />
+                      </div>
+
+                      <a
+                        style="
+                          color: #51afc5;
+                          text-decoration: underline;
+                          text-underline-offset: 5px;
+                          cursor: pointer;
+                        "
+                        class="ml-auto mr-3 mt-3"
+                        onclick="changeNumber(event)"
+                        >Change phone number?</a
+                      >
+                    </div>
+                  </div>
+
+                  <div class="col-lg-12 otpInput">
+                    <div class="row form-group">
+                      <div class="col-xl-12">
+                        <label class="form-control-label mr-3" for="otp"
+                          >One Time Password
+                        </label>
+                        <input
+                          class="form-control"
+                          id="otp"
+                          name="otp"
+                          type="text"
+                          value=""
+                          maxlength="4"
+                          placeholder="Enter OTP received to your phone number"
+                        />
+                      </div>
+                      <a
+                        style="
+                          color: #51afc5;
+                          text-decoration: underline;
+                          text-underline-offset: 5px;
+                          cursor: pointer;
+                        "
+                        class="ml-auto mr-3 mt-3"
+                        onclick="resendOtp(event)"
+                        >Didn't receive otp? Resend</a
+                      >
+                    </div>
+                  </div>
+
+                  <div class="col-md-12">
+                    <p id="error-msg" class="text-danger"></p>
+                  </div>
+                </div>
+              </div>
+
+              <!-- Modal footer -->
+              <div class="modal-footer">
+                <!-- <button
+                  type="button"
+                  class="btn btn-secondary"
+                  data-dismiss="modal"
+                >
+                  Close
+                </button> -->
+                <button type="submit" class="btn btn-primary otpButton">
+                  CONTINUE
+                </button>
+              </div>
+            </form>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <!-- Add a container for reCaptcha -->
+    <div id="recaptcha-container"></div>
+    <!-- Argon Scripts -->
+    <!-- Core -->
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/jquery/3.6.0/jquery.min.js"></script>
+    <script src="../../assets/vendor/bootstrap/dist/js/bootstrap.bundle.min.js"></script>
+    <script src="../../assets/vendor/js-cookie/js.cookie.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/jquery.scrollbar/0.2.11/jquery.scrollbar.min.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/jquery-scroll-lock@3.1.3/jquery-scrollLock.min.js"></script>
+
+    <!-- firebase -->
+    <script src="https://www.gstatic.com/firebasejs/8.2.9/firebase-app.js"></script>
+    <script src="https://www.gstatic.com/firebasejs/8.2.8/firebase-auth.js"></script>
+    <script src="https://www.gstatic.com/firebasejs/8.8.1/firebase-analytics.js"></script>
+    <script src="https://www.gstatic.com/firebasejs/8.2.9/firebase-messaging.js"></script>
+    <script src="https://www.gstatic.com/firebasejs/8.2.9/firebase-storage.js"></script>
+
+    <!-- firebase config end -->
+
+    <script
+      src="https://cdnjs.cloudflare.com/ajax/libs/moment.js/2.29.1/moment.min.js"
+      integrity="sha512-qTXRIMyZIFb8iQcfjXWCO8+M5Tbc38Qi5WzdPOYZHIlZpzBHG3L3by84BBBOiRGiEb7KKtAOAs5qYdUiZiQNNQ=="
+      crossorigin="anonymous"
+      referrerpolicy="no-referrer"
+    ></script>
+    <script src="../../admin/js/chips/js/jquery.amsify.suggestags.js"></script>
+
+    <script src="../../assets/js/argon.js?v=1.2.0"></script>
+    <script src="https://unpkg.com/sweetalert/dist/sweetalert.min.js"></script>
+    <script src="../../config.js"></script>
+    <script src="../../admin/js/loader.js"></script>
+    <script src="./register.js"></script>
+
+    <script>
+      // window.recaptchaVerifier = new firebase.auth.RecaptchaVerifier(
+      //   "recaptcha-container",
+      //   {
+      //     size: "invisible",
+      //     callback: function (response) {
+      //       // submitPhoneNumberAuth();
+      //     },
+      //   }
+      // );
+    </script>
+  </body>
+</html>

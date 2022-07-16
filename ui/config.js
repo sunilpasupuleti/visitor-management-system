@@ -1,6 +1,6 @@
-var URL2 = "http://localhost:3000";
+var URL = "http://localhost:3000";
 var URL1 = "https://api-vms.herokuapp.com";
-var URL = "https://backend-vms.webwizard.in";
+var URL2 = "https://backend-vms.webwizard.in";
 
 // const firebaseConfig = {
 //   apiKey: "AIzaSyDGOiun7dENeOS5XvkJNWXORVf7XvDd6gc",
@@ -64,16 +64,21 @@ function getPayload() {
   }
 }
 
-async function sendRequest(type, url, data = null) {
-  let res;
+async function sendRequest(
+  type,
+  url,
+  data,
+  headers = {
+    "Content-Type": "application/json",
+    Authorization: "Bearer " + localStorage.getItem("token"),
+  }
+) {
+  let res = null;
   await $.ajax({
     type: type,
     url: url,
     data: data ? JSON.stringify(data) : null,
-    headers: {
-      "Content-Type": "application/json",
-      Authorization: "Bearer " + localStorage.getItem("token"),
-    },
+    headers: headers,
     success: function (response) {
       res = response;
     },

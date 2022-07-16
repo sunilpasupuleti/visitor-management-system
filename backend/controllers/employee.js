@@ -383,12 +383,20 @@ module.exports = {
     });
 
     if (exists) {
-      await firebaseAdmin
+      firebaseAdmin
         .storage()
         .bucket()
         .file("profile-images/" + body.image.name)
-        .delete();
-
+        .exists()
+        .then(async (imageExists) => {
+          if (imageExists[0]) {
+            firebaseAdmin
+              .storage()
+              .bucket()
+              .file("profile-images/" + body.image.name)
+              .delete();
+          }
+        });
       return res.status(httpstatus.CONFLICT).json({
         message: "Employee already exists with the provided email-id ! ",
       });
@@ -441,14 +449,6 @@ module.exports = {
     });
 
     if (exists) {
-      if (changedEmpImage) {
-        await firebaseAdmin
-          .storage()
-          .bucket()
-          .file("profile-images/" + req.body.image.name)
-          .delete();
-      }
-
       return res.status(httpstatus.CONFLICT).json({
         message: "Employee already exists with the provided email-id ! ",
       });
@@ -459,11 +459,21 @@ module.exports = {
     });
     let image;
     if (changedEmpImage) {
-      await firebaseAdmin
+      firebaseAdmin
         .storage()
         .bucket()
         .file("profile-images/" + details.image.name)
-        .delete();
+        .exists()
+        .then(async (imageExists) => {
+          if (imageExists[0]) {
+            firebaseAdmin
+              .storage()
+              .bucket()
+              .file("profile-images/" + details.image.name)
+              .delete();
+          }
+        });
+
       image = req.body.image;
     } else {
       image = details.image;
@@ -554,11 +564,20 @@ module.exports = {
       .auth()
       .deleteUser(uid)
       .then(async () => {
-        await firebaseAdmin
+        firebaseAdmin
           .storage()
           .bucket()
           .file("profile-images/" + details.image.name)
-          .delete();
+          .exists()
+          .then(async (imageExists) => {
+            if (imageExists[0]) {
+              firebaseAdmin
+                .storage()
+                .bucket()
+                .file("profile-images/" + details.image.name)
+                .delete();
+            }
+          });
 
         await Employee.findOneAndDelete({
           _id: employeeId,

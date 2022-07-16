@@ -11,7 +11,7 @@ const employeeSchema = mongoose.Schema(
     image: { type: Object },
     department: { type: String },
     fcmToken: { type: String },
-    status: { type: String },
+    status: { type: String, default: "enabled" },
     designation: { type: String },
     totalMeetingsDone: { type: Number, default: 0 },
     employeeAdeedOn: { type: Date, default: new Date() },

@@ -1,3 +1,6 @@
+body.white {
+  background-color: #fff !important;
+}
 .grid {
   display: grid;
   grid-template-columns: 1fr 1fr;
@@ -253,5 +256,58 @@ label {
   }
   .at-center input {
     width: 600px;
+  }
+}
+
+.inputfile {
+  width: 0.1px;
+  height: 0.1px;
+  opacity: 0;
+  overflow: hidden;
+  position: absolute;
+  z-index: -1;
+}
+
+.inputfile + label {
+  font-size: 1.25em;
+  font-weight: 700;
+  color: white;
+  padding: 0.5rem;
+  width: 100%;
+  text-align: center;
+  background-color: #5e72c4;
+  display: inline-block;
+  transition: 0.3s;
+}
+
+.inputfile:focus + label,
+.inputfile + label:hover {
+  background-color: #fff;
+  border: 1px solid #5e72c4;
+  color: #5e72c4;
+}
+
+.inputfile + label {
+  cursor: pointer; /* "hand" cursor */
+}
+
+#selfieStream {
+  width: 240px;
+  height: 240px;
+}
+
+#selfie {
+  border-radius: 50%;
+  height: 200px;
+  width: 200px;
+  object-fit: cover;
+}
+
+@media (max-width: 968px) {
+  #selfie {
+    border-radius: 0%;
+    height: 240px;
+    width: 240px;
+    object-fit: cover;
   }
 }

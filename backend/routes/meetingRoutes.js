@@ -11,6 +11,12 @@ router.post(
 );
 
 router.post(
+  "/requestForMeetingWeb",
+  AuthHelper.VerifyVisitorToken,
+  meetingCtrl.requestForMeetingWeb
+);
+
+router.post(
   "/updateMeetingStatus",
   AuthHelper.VerifyToken,
   meetingCtrl.updateMeetingStatus
