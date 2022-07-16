@@ -168,14 +168,15 @@ async function onRegisterVisitor(e) {
     processData: false,
     contentType: false,
     success: function (response) {
-      if (result.visitor) {
-        localStorage.setItem("token", result.token);
+      if (response.visitor) {
+        localStorage.setItem("token", response.token);
+        localStorage.setItem(
+          "visitor-data",
+          window.btoa(JSON.stringify(response.visitor))
+        );
+        location.href = "/visitor";
       }
-      localStorage.setItem(
-        "visitor-data",
-        window.btoa(JSON.stringify(response.visitor))
-      );
-      location.href = "/visitor";
+
       hideLoader();
     },
     error: function (error) {
@@ -200,7 +201,8 @@ async function onSearchVisitor(e) {
   }
   var phoneNum = $("#phone").val();
   $("#phone").attr("disabled", true);
-  const api_url = URL + "/visitor/searchVisitor?phone=" + phoneNum;
+  const api_url =
+    URL + "/visitor/searchVisitor?phone=" + phoneNum + "&companyId=" + company;
   await sendRequest("GET", api_url)
     .then((result) => {
       console.log(result);
@@ -211,10 +213,9 @@ async function onSearchVisitor(e) {
         $(".otpInput").show();
         $(".otpButton").html("VERIFY OTP");
       }
+
       if (result.visitor) {
         localStorage.setItem("token", result.token);
-      }
-      if (result.visitor) {
         localStorage.setItem(
           "visitor-data",
           window.btoa(JSON.stringify(result.visitor))
@@ -259,7 +260,6 @@ async function verifyOtp() {
     return;
   }
   if (+otp === otpCodeFromResponse) {
-    location.href = "/visitor";
     $("#registerForm").show();
     $("#phoneModal").modal("hide");
   } else {

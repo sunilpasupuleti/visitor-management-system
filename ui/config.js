@@ -1,6 +1,6 @@
-// var URL = "http://localhost:3000";
+var URL = "http://localhost:3000";
 var URL1 = "https://api-vms.herokuapp.com";
-var URL = "https://backend-vms.webwizard.in";
+var URL1 = "https://backend-vms.webwizard.in";
 
 // const firebaseConfig = {
 //   apiKey: "AIzaSyDGOiun7dENeOS5XvkJNWXORVf7XvDd6gc",
@@ -186,6 +186,12 @@ function addNav(activeId) {
                           <span class="nav-link-text">Logout</span>
                       </a>
                   </li>
+
+
+                  <li id='qrCode' class="nav-item" >
+                      <img src='' alt='qr code'/>
+                  </li>
+
               </ul>
           </div>
       </div>
@@ -436,7 +442,18 @@ function addNav(activeId) {
 
   let payload = getPayload();
   $(".profile-username").html(`${payload.name}`);
+
   $(".profile-picture").html(payload.name.charAt(0));
+  console.log(payload);
+  if (
+    payload.company &&
+    payload.company.flow &&
+    payload.company.flow === "qrcode"
+  ) {
+    $("#qrCode img").attr("src", `${payload.company.qrCode}`);
+  } else {
+    $("#qrCode").hide();
+  }
 
   let width = window.innerWidth;
   if (width < 1200) {

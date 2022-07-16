@@ -34,8 +34,15 @@ module.exports = {
       });
     }
 
+    if (!req.query.companyId) {
+      return res.status(httpstatus.CONFLICT).json({
+        message: "Provide company id in query data",
+      });
+    }
+
     await Visitor.findOne({
       phone: req.query.phone,
+      company: req.query.companyId,
     })
       .populate("company")
       .then(async (result) => {
@@ -153,6 +160,7 @@ module.exports = {
 
     var exists = await Visitor.findOne({
       phone: phone,
+      company: company,
     });
     if (exists) {
       return res
@@ -255,6 +263,7 @@ module.exports = {
 
       var exists = await Visitor.findOne({
         phone: phone,
+        company: company,
       });
       if (exists) {
         return res
@@ -314,7 +323,6 @@ module.exports = {
       });
 
       documentBlobWriter.on("finish", async () => {
-        console.log(documentBlob.publicUrl());
         visitorDetails.idLink = documentBlob.publicUrl();
         // for uploading selfie
 
@@ -335,7 +343,6 @@ module.exports = {
         });
 
         selfieBlobWriter.on("finish", async () => {
-          console.log(selfieBlob.publicUrl());
           visitorDetails.selfieLink = selfieBlob.publicUrl();
 
           await Visitor.create(visitorDetails)
