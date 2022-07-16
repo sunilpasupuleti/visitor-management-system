@@ -2,7 +2,6 @@ const httpstatus = require("http-status-codes");
 const helper = require("../helpers/helpers");
 const moment = require("moment");
 const CompanyModels = require("../models/companyModels");
-var validator = require("email-validator");
 const helpers = require("../helpers/helpers");
 const employeeModels = require("../models/employeeModels");
 const visitorModels = require("../models/visitorModels");
@@ -10,6 +9,8 @@ const meetingModel = require("../models/meetingModel");
 const configModels = require("../models/configModels");
 const adminModels = require("../models/adminModels");
 const firebase = require("firebase-admin");
+const qrcode = require("qrcode");
+
 module.exports = {
   async getCompany(req, res) {
     const data = await CompanyModels.findOne({
@@ -44,7 +45,7 @@ module.exports = {
 
   async createCompany(req, res) {
     const value = req.body;
-    if (!value.name || !value.address || !value.expiresAt) {
+    if (!value.name || !value.address || !value.expiresAt || !value.flow) {
       return res.status(httpstatus.CONFLICT).json({
         message: "All Fields Required",
       });
@@ -64,9 +65,49 @@ module.exports = {
       name: helper.uppercase(req.body.name),
     })
       .then((data) => {
-        return res
-          .status(httpstatus.OK)
-          .json({ message: "Company added successfully", data });
+        if (value.flow === "qrcode") {
+          let url =
+            process.env.FRONTEND_URL +
+            "/visitor/register/?company_id=" +
+            data._id;
+          qrcode.toDataURL(url, async (err, src) => {
+            if (err) {
+              return res.status(httpstatus.CONFLICT).json({
+                message: "Error im generating qr code",
+              });
+            }
+
+            await CompanyModels.findOneAndUpdate(
+              {
+                _id: data._id,
+              },
+              {
+                $set: {
+                  qrCode: src,
+                },
+              },
+              {
+                new: true,
+              }
+            )
+              .then((result) => {
+                return res.status(httpstatus.OK).json({
+                  message: "Company added successfully",
+                  data: result,
+                });
+              })
+              .catch((err) => {
+                return res.status(httpstatus.INTERNAL_SERVER_ERROR).json({
+                  message: err,
+                });
+              });
+          });
+        } else {
+          return res.status(httpstatus.OK).json({
+            message: "Company added successfully",
+            data,
+          });
+        }
       })
       .catch((err) => {
         return res.status(httpstatus.INTERNAL_SERVER_ERROR).json({
@@ -142,11 +183,18 @@ module.exports = {
 
   async updateCompany(req, res) {
     const value = req.body;
-    if (!value.name || !value.address || !value.expiresAt || !value.Id) {
+    if (
+      !value.name ||
+      !value.address ||
+      !value.expiresAt ||
+      !value.Id ||
+      !value.flow
+    ) {
       return res.status(httpstatus.CONFLICT).json({
         message: "All Fields Required",
       });
     }
+
     const exists = await CompanyModels.findOne({
       _id: { $ne: req.body.Id },
       name: helpers.uppercase(req.body.name),
@@ -158,15 +206,59 @@ module.exports = {
       });
     }
 
+    let company = await CompanyModels.findOne({
+      _id: req.body.Id,
+    });
+
+    if (!company) {
+      return res.status(httpstatus.CONFLICT).json({
+        message: "No company exists exists",
+      });
+    }
+
+    let changedFlow = value.flow;
+    let presentFlow = company.flow;
+
+    let toUpdateData = {
+      ...req.body,
+      name: helper.uppercase(req.body.name),
+      qrCode: company.qrCode,
+    };
+
+    if (changedFlow !== presentFlow) {
+      if (changedFlow === "qrcode") {
+        let url =
+          process.env.FRONTEND_URL +
+          "/visitor/register/?company_id=" +
+          company._id;
+        qrcode.toDataURL(url, async (err, src) => {
+          if (err) {
+            return res.status(httpstatus.CONFLICT).json({
+              message: "Error in generating qr code",
+            });
+          }
+          toUpdateData.qrCode = src;
+          await CompanyModels.findOneAndUpdate(
+            {
+              _id: req.body.Id,
+            },
+            {
+              $set: toUpdateData,
+            },
+            { new: true }
+          );
+        });
+      } else {
+        toUpdateData.qrCode = null;
+      }
+    }
+
     await CompanyModels.findOneAndUpdate(
       {
         _id: req.body.Id,
       },
       {
-        $set: {
-          ...req.body,
-          name: helper.uppercase(req.body.name),
-        },
+        $set: toUpdateData,
       },
       { new: true }
     )

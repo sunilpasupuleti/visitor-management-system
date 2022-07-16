@@ -1,6 +1,6 @@
-var URL = "http://localhost:3000";
+// var URL = "http://localhost:3000";
 var URL1 = "https://api-vms.herokuapp.com";
-var URL2 = "https://backend-vms.webwizard.in";
+var URL = "https://backend-vms.webwizard.in";
 
 // const firebaseConfig = {
 //   apiKey: "AIzaSyDGOiun7dENeOS5XvkJNWXORVf7XvDd6gc",

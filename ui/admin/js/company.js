@@ -30,24 +30,28 @@ async function buildclientTable() {
     let companyCount = 0;
     filCompanies.forEach(async (company) => {
       companyCount += 1;
-      const { _id, name, address, expiresAt } = company;
-
+      const { _id, name, address, expiresAt, flow, qrCode } = company;
       var date = moment(expiresAt);
       var expiryTime = date.format("MMM DD , YYYY");
 
       let tablerow = `
           <tr>
-          <th>
-        ${companyCount}
-          </th>
-          <td>${name}</td>
-          <td>${address}</td>
-          <td>${expiryTime}</td>
-          <td>
-          <button class='btn btn-secondary btn-sm'  onclick="openEditModal('${_id}')">Edit</button>
-          <button class='btn btn-danger btn-sm'  onclick="deleteCompany('${_id}' )">Delete</button>
-            
-        </td>
+              <th>
+                ${companyCount}
+              </th>
+              <td>${name}</td>
+              <td>${address}</td>
+              <td>${expiryTime}</td>
+              <td style="text-transform:uppercase;cursor:pointer;">${
+                flow === "qrcode"
+                  ? `<img  onclick="onOpenQrCode('${qrCode}')" src='${qrCode}' alt='qr code'/>`
+                  : flow
+              }</td>
+              <td>
+              <button class='btn btn-secondary btn-sm'  onclick="openEditModal('${_id}')">Edit</button>
+              <button class='btn btn-danger btn-sm'  onclick="deleteCompany('${_id}' )">Delete</button>
+            </td>
+        </tr>
           `;
       tableBody.append(tablerow);
     });
@@ -55,12 +59,20 @@ async function buildclientTable() {
   hideLoader();
 }
 
+function onOpenQrCode(qrCode) {
+  var image = new Image();
+  image.src = qrCode;
+  var w = window.open("");
+  w.document.write(image.outerHTML);
+  w.document.close();
+}
+
 async function onAddCompany(e) {
   e.preventDefault();
-  showLoader();
   let name = $("#com-name").val();
   let address = $("#com-add").val();
   let expiresAt = $("#com-lic").val();
+  let qrflow = document.getElementById("qrflow");
 
   if (name === "" || address === "" || !expiresAt) {
     hideLoader();
@@ -73,6 +85,7 @@ async function onAddCompany(e) {
     name,
     address,
     expiresAt,
+    flow: qrflow.checked ? "qrcode" : "normal",
   };
   var api_url = URL + "/company/create-company";
   var result = await sendRequest("POST", api_url, body);
@@ -96,6 +109,8 @@ function openEditModal(comId) {
   $("#edit-com-add").val(company.address);
   $("#edit-com-lic").val(moment(company.expiresAt).format("YYYY-MM-DD"));
   $("#edit-com-id").val(company._id);
+  let flow = company.flow === "qrcode";
+  $("#edit-qrflow").attr("checked", flow);
 }
 
 async function onEditCompany(e) {
@@ -105,6 +120,7 @@ async function onEditCompany(e) {
   let address = $("#edit-com-add").val();
   let expiresAt = $("#edit-com-lic").val();
   let comId = $("#edit-com-id").val();
+  let qrflow = document.getElementById("edit-qrflow");
 
   if (name === "" || address === "" || !expiresAt || comId === "") {
     hideLoader();
@@ -117,6 +133,7 @@ async function onEditCompany(e) {
     address,
     expiresAt,
     Id: comId,
+    flow: qrflow.checked ? "qrcode" : "normal",
   };
 
   const api_url = URL + "/company/update-company";
@@ -207,6 +224,7 @@ async function searchFilter(e) {
       return (
         e.name.toLowerCase().includes(searchText) ||
         e.address.includes(searchText) ||
+        e.flow.includes(searchText) ||
         moment(e.expiresAt)
           .format("MMM DD , YYYY")
           .toLowerCase()

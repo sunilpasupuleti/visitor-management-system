@@ -10,7 +10,6 @@ const employee = require("./routes/employeeRoutes");
 const company = require("./routes/companyRoutes");
 const admin = require("./routes/adminRoutes");
 const meeting = require("./routes/meetingRoutes");
-const employeeModel = require("./models/employeeModels");
 
 var firebaseadmin = require("firebase-admin");
 
