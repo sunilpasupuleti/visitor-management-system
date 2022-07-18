@@ -44,7 +44,10 @@ async function buildclientTable() {
               <td>${expiryTime}</td>
               <td style="text-transform:uppercase;cursor:pointer;">${
                 flow === "qrcode"
-                  ? `<img  onclick="onOpenQrCode('${qrCode}')" src='${qrCode}' alt='qr code'/>`
+                  ? `<a download='Qr Code' href='${qrCode}'>
+                       <img src='${qrCode}' alt='qr code'/>
+                     </a>
+                    `
                   : flow
               }</td>
               <td>

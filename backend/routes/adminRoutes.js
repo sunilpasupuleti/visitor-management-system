@@ -11,6 +11,9 @@ router.post(
   adminCtrl.setDepartments
 );
 
+// for qr flow
+router.get("/getAdmin", AuthHelper.VerifyToken, adminCtrl.getAdmin);
+
 router.get("/getDepartments", AuthHelper.VerifyToken, adminCtrl.getDepartments);
 
 router.get("/dashboard", AuthHelper.VerifyToken, adminCtrl.dashboard);

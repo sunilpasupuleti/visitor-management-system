@@ -3,6 +3,7 @@ const Config = require("../models/configModels");
 const Meeting = require("../models/meetingModel");
 const Employee = require("../models/employeeModels");
 const Visitor = require("../models/visitorModels");
+const Admin = require("../models/adminModels");
 
 const helper = require("../helpers/helpers");
 const moment = require("moment");
@@ -23,6 +24,41 @@ module.exports = {
           message: "Error in sending details",
         });
       });
+  },
+
+  // for qr flow
+  async getAdmin(req, res) {
+    let { uid } = req.query;
+    if (!uid) {
+      return res.status(httpstatus.CONFLICT).json({
+        message: "No UID Passed",
+      });
+    }
+
+    let result = await Admin.findOne({ uid: uid }).populate("company");
+
+    if (!result) {
+      res.status(httpstatus.CONFLICT).json({ message: "Invalid uid" });
+      return;
+    }
+    console.log(result);
+    if (
+      !result.company ||
+      !result.company.flow ||
+      result.company.flow !== "qrcode" ||
+      result.role !== "Admin"
+    ) {
+      res
+        .status(httpstatus.CONFLICT)
+        .json({ message: "You are not allowed to login.", allowed: false });
+      return;
+    } else {
+      return res.status(httpstatus.OK).json({
+        message: "Data fetched successfully",
+        data: result,
+        allowed: true,
+      });
+    }
   },
 
   async setDepartments(req, res) {

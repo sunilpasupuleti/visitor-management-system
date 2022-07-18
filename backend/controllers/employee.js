@@ -342,16 +342,8 @@ module.exports = {
   },
 
   async addEmployee(req, res) {
-    const {
-      name,
-      phone,
-      email,
-      department,
-      designation,
-      uid,
-      password,
-      image,
-    } = req.body;
+    const { name, phone, email, department, designation, password, image } =
+      req.body;
 
     if (
       !name ||
@@ -376,6 +368,7 @@ module.exports = {
       image,
       designation: helper.capitalize(designation),
       company: req.user.company._id,
+      role: "employee",
     };
 
     const exists = await Employee.findOne({
@@ -487,6 +480,7 @@ module.exports = {
       department,
       designation: helper.capitalize(designation),
       image,
+      role: "employee",
     };
 
     let updateBody;

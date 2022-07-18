@@ -1,6 +1,6 @@
-var URL = "http://localhost:3000";
+var URL1 = "http://localhost:3000";
 var URL1 = "https://api-vms.herokuapp.com";
-var URL1 = "https://backend-vms.webwizard.in";
+var URL = "https://backend-vms.webwizard.in";
 
 // const firebaseConfig = {
 //   apiKey: "AIzaSyDGOiun7dENeOS5XvkJNWXORVf7XvDd6gc",
@@ -188,8 +188,11 @@ function addNav(activeId) {
                   </li>
 
 
-                  <li id='qrCode' class="nav-item" >
-                      <img src='' alt='qr code'/>
+                  <li id='qrCode' class="nav-item mt-4 ml-3" >
+                    <a download='Qr Code' href=''>
+                        <img src='' alt='qr code'/>
+                     </a>
+
                   </li>
 
               </ul>
@@ -269,6 +272,13 @@ function addNav(activeId) {
           <span>Logout</span>
           <i class="fas fa-sign-out-alt text-dark"></i>
         </a>
+      </li>
+
+      <li id='qrCode-mobile' class="nav-item" >
+      <a download='Qr Code' href=''>
+      <img src='' alt='qr code'/>
+   </a>
+
       </li>
     </ul>
   </div>
@@ -440,24 +450,10 @@ function addNav(activeId) {
   $("body").append(configModel);
   $("body").append(scripts);
 
-  let payload = getPayload();
   $(".profile-username").html(`${payload.name}`);
-
-  $(".profile-picture").html(payload.name.charAt(0));
-  console.log(payload);
-  if (
-    payload.company &&
-    payload.company.flow &&
-    payload.company.flow === "qrcode"
-  ) {
-    $("#qrCode img").attr("src", `${payload.company.qrCode}`);
-  } else {
-    $("#qrCode").hide();
-  }
 
   let width = window.innerWidth;
   if (width < 1200) {
-    console.log("yes add mobile nav");
     $(".mobile-nav").append(mobileNavHtml);
   }
 
@@ -474,6 +470,17 @@ function addNav(activeId) {
 
   if (!isAdmin) {
     $(".isadmin-link").remove();
+  }
+
+  $(".profile-picture").html(data.name.charAt(0));
+  if (data.company && data.company.flow && data.company.flow === "qrcode") {
+    $("#qrCode a").attr("href", `${data.company.qrCode}`);
+    $("#qrCode img").attr("src", `${data.company.qrCode}`);
+    $("#qrCode-mobile a").attr("href", `${data.company.qrCode}`);
+    $("#qrCode-mobile img").attr("src", `${data.company.qrCode}`);
+  } else {
+    $("#qrCode").hide();
+    $("#qrCode-mobile").hide();
   }
 }
 
