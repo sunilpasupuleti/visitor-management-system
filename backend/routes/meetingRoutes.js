@@ -22,6 +22,20 @@ router.post(
   meetingCtrl.updateMeetingStatus
 );
 
+// update status meeting for qr flow app
+router.post(
+  "/updateMeetingStatusQrFlow",
+  AuthHelper.VerifyToken,
+  meetingCtrl.updateMeetingStatusQrFlow
+);
+
+// get all meetings by company
+router.get(
+  "/getAllMeetings",
+  AuthHelper.VerifyToken,
+  meetingCtrl.getAllMeetings
+);
+
 router.get("/searchMeeting", AuthHelper.VerifyToken, meetingCtrl.searchMeeting);
 
 router.get("/getMeetingDetails", meetingCtrl.getMeetingDetails);

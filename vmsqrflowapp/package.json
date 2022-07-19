@@ -41,6 +41,7 @@
     "react-redux": "^8.0.2",
     "redux": "^4.2.0",
     "rn-fetch-blob": "^0.12.0",
+    "socket.io-client": "^4.5.1",
     "styled-components": "^5.3.5"
   },
   "devDependencies": {

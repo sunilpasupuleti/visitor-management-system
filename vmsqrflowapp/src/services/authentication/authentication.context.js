@@ -4,10 +4,6 @@ import {createContext, useEffect, useState} from 'react';
 import {useDispatch} from 'react-redux';
 import TouchID from 'react-native-touch-id';
 import auth, {firebase} from '@react-native-firebase/auth';
-import firestore from '@react-native-firebase/firestore';
-import {notificationActions} from '../../store/notification-slice';
-import messaging from '@react-native-firebase/messaging';
-import {loaderActions} from '../../store/loader-slice';
 import {BACKEND_URL} from '@env';
 import useHttp from '../../hooks/use-http';
 import {Alert} from 'react-native';
@@ -26,7 +22,7 @@ const optionalConfigObject = {
 };
 
 export const AuthenticationContext = createContext({
-  isLocalAuthenticated: false,
+  isLocalAuthenticated: 'pending',
   onLocalAuthenticate: () => null,
   onSignInWithEmail: (
     email,
@@ -38,7 +34,6 @@ export const AuthenticationContext = createContext({
   isAuthenticated: false,
   userData: null,
   onLogout: () => null,
-  onUpdateUserDetails: () => null,
 });
 
 export const AuthenticationContextProvider = ({children}) => {
@@ -75,14 +70,14 @@ export const AuthenticationContextProvider = ({children}) => {
             } else {
               setIsAuthenticated(false);
               // firebase.auth().signOut();
+              onLogout();
             }
           },
           err => {
             console.log(err);
-            // firebase.auth().signOut();
-            // onLogout()
+            onLogout();
             setIsAuthenticated(false);
-            if (err.message) {
+            if (err && err.message) {
               Alert.alert(err.message);
             }
           },
@@ -146,43 +141,6 @@ export const AuthenticationContextProvider = ({children}) => {
     }
   };
 
-  const onSetUserData = async data => {
-    let token = null;
-    await messaging()
-      .getToken()
-      .then(t => {
-        token = t;
-      })
-      .catch(err => {
-        console.log(err);
-      });
-    let user = data.user;
-    let transformedData = {
-      displayName: user.displayName,
-      email: user.email,
-      photoURL: user.photoURL,
-      providerId: user.providerId,
-      uid: user.uid,
-      fcmToken: token,
-      active: true,
-    };
-    onStoreUserDataToFirebase(transformedData)
-      .then(async () => {
-        dispatch(loaderActions.hideLoader());
-      })
-      .catch(err => {
-        dispatch(loaderActions.hideLoader());
-        console.log(err, ' error while storing user details to backend.');
-      });
-  };
-
-  const onStoreUserDataToFirebase = async userData => {
-    // return firestore()
-    //   .collection(userData.uid)
-    //   .doc('user-data')
-    //   .set(userData, {merge: true});
-  };
-
   const onLogout = async () => {
     auth()
       .signOut()
@@ -193,49 +151,6 @@ export const AuthenticationContextProvider = ({children}) => {
       });
   };
 
-  const onUpdateUserDetails = async details => {
-    let token = null;
-    await messaging()
-      .getToken()
-      .then(t => {
-        token = t;
-      })
-      .catch(err => {});
-    dispatch(loaderActions.showLoader({backdrop: true}));
-    firestore()
-      .collection(userData.uid)
-      .doc('user-data')
-      .update({
-        ...details,
-        fcmToken: token,
-      })
-      .then(() => {
-        onGetUserDetails(userData.uid)
-          .then(() => {
-            dispatch(loaderActions.hideLoader());
-            dispatch(
-              notificationActions.showToast({
-                status: 'success',
-                message: 'Updated successfully',
-              }),
-            );
-          })
-          .catch(err => {
-            dispatch(loaderActions.hideLoader());
-          });
-      })
-      .catch(err => {
-        dispatch(loaderActions.hideLoader());
-        dispatch(
-          notificationActions.showToast({
-            status: 'error',
-            message: 'Error in updating the details!',
-          }),
-        );
-        console.log(err, 'Error while updating the user details');
-      });
-  };
-
   const onGetUserDetails = async (
     uid,
     successCb = () => null,
@@ -243,7 +158,7 @@ export const AuthenticationContextProvider = ({children}) => {
   ) => {
     let jwtToken = await firebase.auth().currentUser.getIdToken();
     let url = BACKEND_URL + '/admin/getAdmin?uid=' + uid;
-
+    // console.log(uid, jwtToken);
     sendRequest(
       {
         type: 'GET',
@@ -268,8 +183,7 @@ export const AuthenticationContextProvider = ({children}) => {
         userData,
         onLogout,
         onSignInWithEmail,
-        onSetUserData,
-        onUpdateUserDetails,
+        onSetUserData: setUserData,
       }}>
       {children}
     </AuthenticationContext.Provider>

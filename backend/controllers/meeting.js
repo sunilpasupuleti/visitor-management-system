@@ -453,6 +453,161 @@ module.exports = {
       });
   },
 
+  // UPDATE MEETING STATUS QR FLOW
+
+  async updateMeetingStatusQrFlow(req, res) {
+    const { meetingId, status, rejectedReasons, meetingEndTime } = req.body;
+    if (
+      // !empId ||
+      !meetingId ||
+      !status ||
+      meetingId.length !== 24
+      // empId.length !== 24
+    ) {
+      return res.status(httpstatus.BAD_REQUEST).json({
+        message: "There was no details provided || Invalid ids provided",
+      });
+    }
+
+    let details = await Meeting.findOne({ _id: meetingId });
+
+    if (!details) {
+      return res.status(httpstatus.OK).json({
+        message: "There was no meeting  : ",
+      });
+    }
+
+    let updatedBody = {
+      status: status,
+    };
+
+    if (status === "accepted") {
+      // inprogress /accepted
+      updatedBody.isInProgress = true;
+      updatedBody.accepted = true;
+      updatedBody.meetingAcceptedTime = new Date();
+      await Employee.updateOne(
+        { _id: details.employee._id },
+        { $set: { status: "disabled" } }
+      );
+    } else if (status === "upcoming") {
+      // upcoming
+    } else if (status === "completed") {
+      if (!meetingEndTime) {
+        return res.status(httpstatus.BAD_REQUEST).json({
+          message: "Please provide meeting end time ! (meetingEndTime)  ",
+        });
+      }
+
+      let raisedTime = moment(details.meetingRaisedTime).format(
+        "MMM-DD-YYYY-hh:mm:ss"
+      );
+      let endTime = moment(+meetingEndTime).format("MMM-DD-YYYY-hh:mm:ss");
+      let duration = moment.duration(moment(endTime).diff(raisedTime));
+      let durationHours = duration.hours();
+      let durationMin = duration.minutes();
+      let durationSec = duration.seconds();
+
+      duration = durationHours + "h " + durationMin + "m " + durationSec + "s";
+
+      updatedBody.duration = duration;
+      // get vis Id and emp Id
+      await Visitor.updateOne(
+        {
+          _id: details.visitor._id,
+        },
+        {
+          $inc: {
+            totalMeetingsDone: 1,
+          },
+        }
+      );
+      await Employee.updateOne(
+        {
+          _id: details.employee._id,
+        },
+        {
+          $set: { status: "enabled" },
+          $inc: { totalMeetingsDone: 1 },
+        }
+      );
+      // completed
+      updatedBody.meetingEndTime = new Date();
+      updatedBody.meetingMinutesNotes = meetingMinutesNotes;
+      updatedBody.isInProgress = false;
+    } else if (status === "rejected") {
+      // rejected
+      if (!rejectedReasons) {
+        return res.status(httpstatus.BAD_REQUEST).json({
+          message: "No rejected reasons was provided",
+        });
+      }
+      updatedBody.isInProgress = false;
+      updatedBody.rejectedReasons = rejectedReasons;
+      updatedBody.accepted = false;
+      updatedBody.meetingRejectedTime = new Date();
+      await Employee.updateOne(
+        {
+          _id: details.employee._id,
+        },
+        {
+          $set: { status: "enabled" },
+        }
+      );
+    } else if (status === "reschedule") {
+      // reschedule time
+
+      if (!rescheduledTime) {
+        return res.status(httpstatus.BAD_REQUEST).json({
+          message: "No rescheduled time was provided",
+        });
+      }
+      updatedBody.accepted = false;
+      updatedBody.rescheduled = true;
+
+      updatedBody.meetingRescheduledOn = new Date(+rescheduledTime);
+      smsBody.status =
+        helpers.capitalize("rescheduled") +
+        " to " +
+        moment(+rescheduledTime).format("MMM DD , YYYY hh:mm a");
+
+      await Employee.updateOne(
+        {
+          _id: details.employee._id,
+        },
+        {
+          $set: { status: "enabled" },
+        }
+      );
+    }
+
+    await Meeting.findOneAndUpdate(
+      {
+        _id: meetingId,
+      },
+      {
+        $set: {
+          ...updatedBody,
+        },
+      },
+      {
+        new: true,
+      }
+    )
+      .then(async (result) => {
+        return res.status(httpstatus.OK).json({
+          message: "meeting details updated : ",
+          status: true,
+        });
+      })
+      .catch((err) => {
+        console.log(err);
+        return res
+          .status(httpstatus.INTERNAL_SERVER_ERROR)
+          .json({ message: "Error occured in updating meeting status" });
+      });
+  },
+
   async searchMeeting(req, res) {
     let meeting = await Meeting.findOne({
       "employee._id": req.user._id.toString(),
@@ -476,6 +631,22 @@ module.exports = {
     await Meeting.find({
       company: req.user.company._id,
       status: status,
+    })
+      .populate("company")
+      .then((result) => {
+        res.status(httpstatus.OK).json({
+          message: "meeting details  : ",
+          meetings: result,
+        });
+      })
+      .catch((err) => {
+        res.status(httpstatus.INTERNAL_SERVER_ERROR).json({ message: err });
+      });
+  },
+
+  async getAllMeetings(req, res) {
+    await Meeting.find({
+      company: req.user.company._id,
     })
       .populate("company")
       .then((result) => {
