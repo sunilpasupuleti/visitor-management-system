@@ -1,6 +1,5 @@
-/* eslint-disable react-native/no-inline-styles */
+/* eslint-disable no-unused-vars */
 import React, {useContext, useEffect, useState} from 'react';
-import {ScrollView} from 'react-native';
 import {Spacer} from '../../../components/spacer/spacer.component';
 import {Card} from 'react-native-paper';
 import {FadeInView} from '../../../components/animations/fade.animation';
@@ -28,7 +27,7 @@ export const MeetingsInfo = ({navigation, searchKeyword}) => {
   });
   const [upcomingMeetings, setUpcomingMeetings] = useState({
     meetings: [],
-    pinOpened: false,
+    pinOpened: true,
   });
   const [onGoingMeetings, setOnGoingMeetings] = useState({
     meetings: [],

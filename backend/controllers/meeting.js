@@ -7,7 +7,6 @@ const Companies = require("../models/companyModels");
 const helpers = require("../helpers/helpers");
 const mongoose = require("mongoose");
 const moment = require("moment");
-const meetingUpdateSocket = require("../sockets/streams").meetingUpdateSocket;
 
 moment.suppressDeprecationWarnings = true;
 const firebase = require("firebase-admin");
@@ -214,6 +213,10 @@ module.exports = {
         // // });
 
         // validateMeetingTimer(result._id);
+
+        const meetingUpdateSocket =
+          require("../sockets/socket").meetingUpdateSocket;
+        meetingUpdateSocket({ data: req.user.company._id });
 
         return res.status(httpstatus.OK).json({
           message: "meeting scheduled successfully: ",
@@ -533,7 +536,6 @@ module.exports = {
       );
       // completed
       updatedBody.meetingEndTime = new Date();
-      updatedBody.meetingMinutesNotes = meetingMinutesNotes;
       updatedBody.isInProgress = false;
     } else if (status === "rejected") {
       // rejected
@@ -595,6 +597,10 @@ module.exports = {
       }
     )
       .then(async (result) => {
+        const meetingUpdateSocket =
+          require("../sockets/socket").meetingUpdateSocket;
+        meetingUpdateSocket({ data: req.user.company._id });
+
         return res.status(httpstatus.OK).json({
           message: "meeting details updated : ",
           status: true,

@@ -12,6 +12,7 @@ import {HomeScreen} from '../../features/home/screens/home.screen';
 import {useTheme} from 'styled-components/native';
 import {MeetingScreen} from '../../features/meeting/screens/meeting.screen';
 import {UserContextProvider} from '../../services/user/user.context';
+import {SocketContextProvider} from '../../services/socket/socket.context';
 
 const Stack = createStackNavigator();
 
@@ -27,35 +28,38 @@ export const AppNavigator = () => {
   };
 
   return (
-    <UserContextProvider>
-      <Stack.Navigator
-        screenOptions={{
-          headerShown: false,
-        }}>
-        <Stack.Screen name="Home" component={HomeScreen} />
+    <SocketContextProvider>
+      <UserContextProvider>
+        <Stack.Navigator
+          screenOptions={{
+            headerShown: false,
+          }}>
+          <Stack.Screen name="Home" component={HomeScreen} />
 
-        <Stack.Screen
-          options={{
-            headerShown: true,
-            headerMode: 'screen',
-            ...headerStyles,
-            cardStyleInterpolator: CardStyleInterpolators.forBottomSheetAndroid,
-          }}
-          name="Meeting"
-          component={MeetingScreen}
-        />
+          <Stack.Screen
+            options={{
+              headerShown: true,
+              headerMode: 'screen',
+              ...headerStyles,
+              cardStyleInterpolator:
+                CardStyleInterpolators.forBottomSheetAndroid,
+            }}
+            name="Meeting"
+            component={MeetingScreen}
+          />
 
-        <Stack.Screen
-          options={{
-            headerMode: 'screen',
-            gestureResponseDistance: Dimensions.get('window').height - 200,
-            ...TransitionPresets.ModalPresentationIOS,
-          }}
-          name="Settings"
-          component={SettingsNavigator}
-        />
-      </Stack.Navigator>
-      <Notification />
-    </UserContextProvider>
+          <Stack.Screen
+            options={{
+              headerMode: 'screen',
+              gestureResponseDistance: Dimensions.get('window').height - 200,
+              ...TransitionPresets.ModalPresentationIOS,
+            }}
+            name="Settings"
+            component={SettingsNavigator}
+          />
+        </Stack.Navigator>
+        <Notification />
+      </UserContextProvider>
+    </SocketContextProvider>
   );
 };

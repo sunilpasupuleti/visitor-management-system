@@ -15,6 +15,7 @@ var firebaseadmin = require("firebase-admin");
 
 var serviceAccount = require("./vistor-management-app-firebase.json");
 const adminModels = require("./models/adminModels");
+const socketIo = require("socket.io");
 
 dotenv.config();
 firebaseadmin.initializeApp({
@@ -91,8 +92,16 @@ app.use("/employee", employee);
 app.use("/meeting", meeting);
 app.use("/company", company);
 
-const http = require("http").Server(app);
+const server = require("http").createServer(app);
 
-http.listen(process.env.PORT || 8080, () => {
+const io = socketIo(server, {
+  cors: {
+    origin: "*",
+  },
+});
+
+require("./sockets/socket").socket(io);
+
+server.listen(process.env.PORT || 8080, () => {
   console.log(`server started on port number ${process.env.PORT}`);
 });

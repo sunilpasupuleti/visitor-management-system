@@ -557,7 +557,22 @@
     <script src="js/dashboard.js"></script>
     <script src="js/set_departments.js"></script>
 
+    <!-- socket io  -->
+
+    <script
+      src="https://cdnjs.cloudflare.com/ajax/libs/socket.io/4.4.1/socket.io.min.js"
+      integrity="sha512-iqRVtNB+t9O+epcgUTIPF+nklypcR23H1yR1NFM9kffn6/iBhZ9bTB6oKLaGMv8JE9UgjcwfBFg/eHC/VMws+g=="
+      crossorigin="anonymous"
+      referrerpolicy="no-referrer"
+    ></script>
+
     <script>
+      // var socket = io("localhost:3000/");
+
+      // socket.on("meetingUpdated", (data) => {
+      //   console.log(data);
+      // });
+
       // $(".user-profile-picture").attr(
       //     "src",
       //     localStorage.getItem("userImageURL")
@@ -579,8 +594,6 @@
       let payload = getPayload();
       $(".profile-username").html(`${payload.name}`);
       $(".profile-picture").html(payload.name.charAt(0));
-    </script>
-    <script>
       addNav("dashboard");
     </script>
   </body>

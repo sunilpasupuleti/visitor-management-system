@@ -7,6 +7,7 @@ import {BACKEND_URL} from '@env';
 import useHttp from '../../hooks/use-http';
 import {AuthenticationContext} from '../authentication/authentication.context';
 import {Alert} from 'react-native';
+import {SocketContext} from '../socket/socket.context';
 
 export const UserContext = createContext({
   onGetAllMeetings: () => null,
@@ -18,6 +19,7 @@ export const UserContextProvider = ({children}) => {
   const [meetings, setMeetings] = useState(false);
   const {userData} = useContext(AuthenticationContext);
   const {sendRequest} = useHttp();
+  const {onFetchEvent, socket} = useContext(SocketContext);
   const dispatch = useDispatch();
 
   useEffect(() => {
@@ -26,7 +28,7 @@ export const UserContextProvider = ({children}) => {
       onGetAllMeetings(
         result => {
           if (result && result.meetings) {
-            setMeetings(result.meetings);
+            setMeetings(result.meetings.reverse());
           }
         },
         () => {
@@ -36,6 +38,29 @@ export const UserContextProvider = ({children}) => {
     }
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [userData]);
+
+  useEffect(() => {
+    const socketEventHandler = id => {
+      if (id === userData.company._id) {
+        onGetAllMeetings(
+          result => {
+            if (result && result.meetings) {
+              setMeetings(result.meetings.reverse());
+            }
+          },
+          () => {
+            Alert.alert('Error occured');
+          },
+        );
+      }
+    };
+
+    onFetchEvent('meetingUpdated', socketEventHandler);
+    return () => {
+      socket.off('meetingUpdated', socketEventHandler);
+    };
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [onFetchEvent]);
 
   const onGetAllMeetings = async (
     successCb = () => null,

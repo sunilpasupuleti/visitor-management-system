@@ -24,12 +24,10 @@ export const MeetingScreen = ({navigation, route}) => {
   const [meeting, setMeeting] = useState(null);
   const [rejectedReasons, setRejectedReasons] = useState(null);
   const [rejectedModalVisible, setRejectedModalVisible] = useState(false);
-
   const {meetings, onUpdateMeetingStatus} = useContext(UserContext);
 
   useEffect(() => {
     if (route.params && route.params.meetingId) {
-      console.log(route.params.meetingId);
       let filteredMeeting = meetings.filter(
         m => m._id === route.params.meetingId,
       )[0];
@@ -118,11 +116,10 @@ export const MeetingScreen = ({navigation, route}) => {
     }
 
     if (status === 'completed') {
-      data.meetingEndTime = new Date();
+      data.meetingEndTime = new Date().toISOString();
     }
     onCloseRejectModal();
     onUpdateMeetingStatus(data, result => {
-      console.log(result);
       navigation.goBack();
     });
   };
