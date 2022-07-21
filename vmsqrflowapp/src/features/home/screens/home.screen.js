@@ -22,6 +22,14 @@ export const HomeScreen = ({navigation}) => {
       <ScrollView>
         <MainWrapper>
           <IconsContainer>
+            <TouchableOpacity onPress={() => navigation.navigate('Dashboard')}>
+              <UpperIcon
+                name="md-tv-outline"
+                size={30}
+                color={theme.colors.brand.primary}
+              />
+            </TouchableOpacity>
+
             <TouchableOpacity onPress={() => navigation.navigate('Settings')}>
               <UpperIcon
                 name="md-cog-outline"

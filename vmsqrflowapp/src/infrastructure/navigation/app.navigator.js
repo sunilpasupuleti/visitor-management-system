@@ -13,6 +13,7 @@ import {useTheme} from 'styled-components/native';
 import {MeetingScreen} from '../../features/meeting/screens/meeting.screen';
 import {UserContextProvider} from '../../services/user/user.context';
 import {SocketContextProvider} from '../../services/socket/socket.context';
+import {DashboardScreen} from '../../features/dashboard/screens/dashboard.screen';
 
 const Stack = createStackNavigator();
 
@@ -57,7 +58,20 @@ export const AppNavigator = () => {
             name="Settings"
             component={SettingsNavigator}
           />
+
+          <Stack.Screen
+            options={{
+              headerMode: 'screen',
+              headerShown: true,
+              ...headerStyles,
+              gestureResponseDistance: Dimensions.get('window').height - 200,
+              ...TransitionPresets.ModalPresentationIOS,
+            }}
+            name="Dashboard"
+            component={DashboardScreen}
+          />
         </Stack.Navigator>
+
         <Notification />
       </UserContextProvider>
     </SocketContextProvider>
