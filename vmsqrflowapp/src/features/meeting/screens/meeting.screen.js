@@ -18,6 +18,7 @@ import {UserContext} from '../../../services/user/user.context';
 import {View} from 'react-native';
 import moment from 'moment';
 import {SafeArea} from '../../../components/utility/safe-area.component';
+import {BluetoothScreen} from './bluetooth.screen';
 
 export const MeetingScreen = ({navigation, route}) => {
   const theme = useTheme();
@@ -129,244 +130,246 @@ export const MeetingScreen = ({navigation, route}) => {
     setRejectedReasons(null);
   };
 
-  return (
-    meeting && (
-      <SafeArea>
-        <ScrollView showsVerticalScrollIndicator={false}>
-          <View>
-            <Portal>
-              <Dialog
-                visible={rejectedModalVisible}
-                onDismiss={onCloseRejectModal}>
-                <Dialog.Title>Rejected reasons ? </Dialog.Title>
-                <Dialog.Content>
-                  <TextInput
-                    autoFocus
-                    outlineColor="tomato"
-                    activeOutlineColor="tomato"
-                    selectionColor="tomato"
-                    theme={{roundness: 10}}
-                    mode="outlined"
-                    returnKeyType="done"
-                    onChangeText={n => setRejectedReasons(n)}
-                    value={rejectedReasons}
-                    placeholder="Enter your rejected reasons"
-                    keyboardType="default"
-                    right={
-                      rejectedReasons && (
-                        <TextInput.Icon
-                          name="close-circle"
-                          color="#bbb"
-                          onPress={() => setRejectedReasons('')}
-                        />
-                      )
-                    }
-                  />
-                </Dialog.Content>
-                <Dialog.Actions>
-                  <Button
-                    theme={{roundness: 10}}
-                    mode="text"
-                    style={{height: 40, marginRight: 10}}
-                    color="#aaa"
-                    labelStyle={{color: '#fff'}}
-                    icon="close"
-                    onPress={onCloseRejectModal}>
-                    <ButtonText color="#aaa">Cancel </ButtonText>
-                  </Button>
+  return <BluetoothScreen />;
 
-                  <Button
-                    theme={{roundness: 10}}
-                    mode="contained"
-                    style={{height: 40}}
-                    color="tomato"
-                    labelStyle={{color: '#fff'}}
-                    icon="close"
-                    onPress={() => onUpdateStatus('rejected')}>
-                    <ButtonText color="#fff">REJECT </ButtonText>
-                  </Button>
-                </Dialog.Actions>
-              </Dialog>
-            </Portal>
-          </View>
+  // return (
+  //   meeting && (
+  //     <SafeArea>
+  //       <ScrollView showsVerticalScrollIndicator={false}>
+  //         <View>
+  //           <Portal>
+  //             <Dialog
+  //               visible={rejectedModalVisible}
+  //               onDismiss={onCloseRejectModal}>
+  //               <Dialog.Title>Rejected reasons ? </Dialog.Title>
+  //               <Dialog.Content>
+  //                 <TextInput
+  //                   autoFocus
+  //                   outlineColor="tomato"
+  //                   activeOutlineColor="tomato"
+  //                   selectionColor="tomato"
+  //                   theme={{roundness: 10}}
+  //                   mode="outlined"
+  //                   returnKeyType="done"
+  //                   onChangeText={n => setRejectedReasons(n)}
+  //                   value={rejectedReasons}
+  //                   placeholder="Enter your rejected reasons"
+  //                   keyboardType="default"
+  //                   right={
+  //                     rejectedReasons && (
+  //                       <TextInput.Icon
+  //                         name="close-circle"
+  //                         color="#bbb"
+  //                         onPress={() => setRejectedReasons('')}
+  //                       />
+  //                     )
+  //                   }
+  //                 />
+  //               </Dialog.Content>
+  //               <Dialog.Actions>
+  //                 <Button
+  //                   theme={{roundness: 10}}
+  //                   mode="text"
+  //                   style={{height: 40, marginRight: 10}}
+  //                   color="#aaa"
+  //                   labelStyle={{color: '#fff'}}
+  //                   icon="close"
+  //                   onPress={onCloseRejectModal}>
+  //                   <ButtonText color="#aaa">Cancel </ButtonText>
+  //                 </Button>
 
-          <MainWrapper>
-            <>
-              <VisitorImageWrapper>
-                {/* <Text fontsize="20px">Meeting Details</Text> */}
-                <Spacer size={'xlarge'} />
-                <VisitorImage
-                  source={{
-                    uri: meeting.visitor?.selfieLink,
-                  }}
-                />
-              </VisitorImageWrapper>
-              <Spacer size={'xlarge'} />
-              <DataTable>
-                <DataTable.Header>
-                  <DataTable.Title>Title</DataTable.Title>
-                  <DataTable.Title>Value</DataTable.Title>
-                </DataTable.Header>
+  //                 <Button
+  //                   theme={{roundness: 10}}
+  //                   mode="contained"
+  //                   style={{height: 40}}
+  //                   color="tomato"
+  //                   labelStyle={{color: '#fff'}}
+  //                   icon="close"
+  //                   onPress={() => onUpdateStatus('rejected')}>
+  //                   <ButtonText color="#fff">REJECT </ButtonText>
+  //                 </Button>
+  //               </Dialog.Actions>
+  //             </Dialog>
+  //           </Portal>
+  //         </View>
 
-                <DataTable.Row>
-                  <DataTable.Cell>Name</DataTable.Cell>
-                  <DataTable.Cell>
-                    <Text>{meeting.visitor.name}</Text>
-                  </DataTable.Cell>
-                </DataTable.Row>
+  //         <MainWrapper>
+  //           <>
+  //             <VisitorImageWrapper>
+  //               {/* <Text fontsize="20px">Meeting Details</Text> */}
+  //               <Spacer size={'xlarge'} />
+  //               <VisitorImage
+  //                 source={{
+  //                   uri: meeting.visitor?.selfieLink,
+  //                 }}
+  //               />
+  //             </VisitorImageWrapper>
+  //             <Spacer size={'xlarge'} />
+  //             <DataTable>
+  //               <DataTable.Header>
+  //                 <DataTable.Title>Title</DataTable.Title>
+  //                 <DataTable.Title>Value</DataTable.Title>
+  //               </DataTable.Header>
 
-                <DataTable.Row>
-                  <DataTable.Cell>Address</DataTable.Cell>
-                  <DataTable.Cell>{meeting.visitor.address}</DataTable.Cell>
-                </DataTable.Row>
+  //               <DataTable.Row>
+  //                 <DataTable.Cell>Name</DataTable.Cell>
+  //                 <DataTable.Cell>
+  //                   <Text>{meeting.visitor.name}</Text>
+  //                 </DataTable.Cell>
+  //               </DataTable.Row>
 
-                <DataTable.Row>
-                  <DataTable.Cell>Mobile</DataTable.Cell>
-                  <DataTable.Cell>{meeting.visitor.phone}</DataTable.Cell>
-                </DataTable.Row>
+  //               <DataTable.Row>
+  //                 <DataTable.Cell>Address</DataTable.Cell>
+  //                 <DataTable.Cell>{meeting.visitor.address}</DataTable.Cell>
+  //               </DataTable.Row>
 
-                <DataTable.Row>
-                  <DataTable.Cell>Proof Type</DataTable.Cell>
-                  <DataTable.Cell>{meeting.visitor.idType}</DataTable.Cell>
-                </DataTable.Row>
+  //               <DataTable.Row>
+  //                 <DataTable.Cell>Mobile</DataTable.Cell>
+  //                 <DataTable.Cell>{meeting.visitor.phone}</DataTable.Cell>
+  //               </DataTable.Row>
 
-                <DataTable.Row>
-                  <DataTable.Cell>Vehicle Number</DataTable.Cell>
-                  <DataTable.Cell>
-                    {meeting.vehicleNumber ? meeting.vehicleNumber : '-'}
-                  </DataTable.Cell>
-                </DataTable.Row>
-                <DataTable.Row>
-                  <DataTable.Cell>Belongings</DataTable.Cell>
-                  <DataTable.Cell>
-                    {meeting.otherBelongings &&
-                    meeting.otherBelongings.length > 0
-                      ? meeting.otherBelongings
-                      : '-'}
-                  </DataTable.Cell>
-                </DataTable.Row>
-                <DataTable.Row>
-                  <DataTable.Cell>Additional Members</DataTable.Cell>
-                  <DataTable.Cell>
-                    {meeting.additionalMembers
-                      ? meeting.additionalMembers.length
-                      : '-'}
-                  </DataTable.Cell>
-                </DataTable.Row>
+  //               <DataTable.Row>
+  //                 <DataTable.Cell>Proof Type</DataTable.Cell>
+  //                 <DataTable.Cell>{meeting.visitor.idType}</DataTable.Cell>
+  //               </DataTable.Row>
 
-                {meeting.status === 'rejected' && (
-                  <DataTable.Row>
-                    <DataTable.Cell>Rejected reasons</DataTable.Cell>
-                    <DataTable.Cell>
-                      {meeting.rejectedReasons ? meeting.rejectedReasons : '-'}
-                    </DataTable.Cell>
-                  </DataTable.Row>
-                )}
-              </DataTable>
-              <Spacer size={'xlarge'} />
-              <Text fontsize="20px">To Meet</Text>
-              <Spacer size={'xlarge'} />
-              <DataTable.Row>
-                <DataTable.Cell>Department</DataTable.Cell>
-                <DataTable.Cell>{meeting.employee?.department}</DataTable.Cell>
-              </DataTable.Row>
-              <DataTable.Row>
-                <DataTable.Cell>Name</DataTable.Cell>
-                <DataTable.Cell>
-                  <Text>{meeting.employee?.name}</Text>
-                </DataTable.Cell>
-              </DataTable.Row>
-              <DataTable.Row>
-                <DataTable.Cell>Purpose</DataTable.Cell>
-                <DataTable.Cell>{meeting.purpose}</DataTable.Cell>
-              </DataTable.Row>
-              {(meeting.status === 'completed' ||
-                meeting.status === 'accepted') && (
-                <DataTable.Row>
-                  <DataTable.Cell>In Time</DataTable.Cell>
-                  <DataTable.Cell>
-                    <DataTable.Cell>
-                      {meeting.meetingAcceptedTime
-                        ? moment(meeting.meetingAcceptedTime).format(
-                            'DD-MMM-YYYY,  hh:mm a',
-                          )
-                        : '-'}
-                    </DataTable.Cell>
-                  </DataTable.Cell>
-                </DataTable.Row>
-              )}
+  //               <DataTable.Row>
+  //                 <DataTable.Cell>Vehicle Number</DataTable.Cell>
+  //                 <DataTable.Cell>
+  //                   {meeting.vehicleNumber ? meeting.vehicleNumber : '-'}
+  //                 </DataTable.Cell>
+  //               </DataTable.Row>
+  //               <DataTable.Row>
+  //                 <DataTable.Cell>Belongings</DataTable.Cell>
+  //                 <DataTable.Cell>
+  //                   {meeting.otherBelongings &&
+  //                   meeting.otherBelongings.length > 0
+  //                     ? meeting.otherBelongings
+  //                     : '-'}
+  //                 </DataTable.Cell>
+  //               </DataTable.Row>
+  //               <DataTable.Row>
+  //                 <DataTable.Cell>Additional Members</DataTable.Cell>
+  //                 <DataTable.Cell>
+  //                   {meeting.additionalMembers
+  //                     ? meeting.additionalMembers.length
+  //                     : '-'}
+  //                 </DataTable.Cell>
+  //               </DataTable.Row>
 
-              {meeting.status === 'rejected' && (
-                <DataTable.Row>
-                  <DataTable.Cell>Rejected Time</DataTable.Cell>
-                  <DataTable.Cell>
-                    <DataTable.Cell>
-                      {meeting.meetingRejectedTime
-                        ? moment(meeting.meetingRejectedTime).format(
-                            'DD-MMM-YYYY,  hh:mm a',
-                          )
-                        : '-'}
-                    </DataTable.Cell>
-                  </DataTable.Cell>
-                </DataTable.Row>
-              )}
-              {meeting.status === 'completed' && (
-                <DataTable.Row>
-                  <DataTable.Cell>Out Time</DataTable.Cell>
-                  <DataTable.Cell>
-                    {meeting.meetingEndTime
-                      ? moment(meeting.meetingEndTime).format(
-                          'DD-MMM-YYYY,  hh:mm a',
-                        )
-                      : '-'}
-                  </DataTable.Cell>
-                </DataTable.Row>
-              )}
-            </>
+  //               {meeting.status === 'rejected' && (
+  //                 <DataTable.Row>
+  //                   <DataTable.Cell>Rejected reasons</DataTable.Cell>
+  //                   <DataTable.Cell>
+  //                     {meeting.rejectedReasons ? meeting.rejectedReasons : '-'}
+  //                   </DataTable.Cell>
+  //                 </DataTable.Row>
+  //               )}
+  //             </DataTable>
+  //             <Spacer size={'xlarge'} />
+  //             <Text fontsize="20px">To Meet</Text>
+  //             <Spacer size={'xlarge'} />
+  //             <DataTable.Row>
+  //               <DataTable.Cell>Department</DataTable.Cell>
+  //               <DataTable.Cell>{meeting.employee?.department}</DataTable.Cell>
+  //             </DataTable.Row>
+  //             <DataTable.Row>
+  //               <DataTable.Cell>Name</DataTable.Cell>
+  //               <DataTable.Cell>
+  //                 <Text>{meeting.employee?.name}</Text>
+  //               </DataTable.Cell>
+  //             </DataTable.Row>
+  //             <DataTable.Row>
+  //               <DataTable.Cell>Purpose</DataTable.Cell>
+  //               <DataTable.Cell>{meeting.purpose}</DataTable.Cell>
+  //             </DataTable.Row>
+  //             {(meeting.status === 'completed' ||
+  //               meeting.status === 'accepted') && (
+  //               <DataTable.Row>
+  //                 <DataTable.Cell>In Time</DataTable.Cell>
+  //                 <DataTable.Cell>
+  //                   <DataTable.Cell>
+  //                     {meeting.meetingAcceptedTime
+  //                       ? moment(meeting.meetingAcceptedTime).format(
+  //                           'DD-MMM-YYYY,  hh:mm a',
+  //                         )
+  //                       : '-'}
+  //                   </DataTable.Cell>
+  //                 </DataTable.Cell>
+  //               </DataTable.Row>
+  //             )}
 
-            <ActionsContainer>
-              <Button
-                theme={{roundness: 10}}
-                mode="contained"
-                style={{height: 40}}
-                color={theme.colors.brand.primary}
-                icon="printer"
-                onPress={() => onUpdateStatus('accepted')}>
-                <ButtonText color="#fff">PRINT</ButtonText>
-              </Button>
-              <ButtonsContainer>
-                {meeting.status === 'upcoming' && (
-                  <Spacer position={'right'}>
-                    <Button
-                      theme={{roundness: 10}}
-                      mode="outlined"
-                      style={{height: 40, width: '100%'}}
-                      color="tomato"
-                      icon="close"
-                      onPress={() => setRejectedModalVisible(true)}>
-                      <ButtonText color="tomato">REJECT </ButtonText>
-                    </Button>
-                  </Spacer>
-                )}
+  //             {meeting.status === 'rejected' && (
+  //               <DataTable.Row>
+  //                 <DataTable.Cell>Rejected Time</DataTable.Cell>
+  //                 <DataTable.Cell>
+  //                   <DataTable.Cell>
+  //                     {meeting.meetingRejectedTime
+  //                       ? moment(meeting.meetingRejectedTime).format(
+  //                           'DD-MMM-YYYY,  hh:mm a',
+  //                         )
+  //                       : '-'}
+  //                   </DataTable.Cell>
+  //                 </DataTable.Cell>
+  //               </DataTable.Row>
+  //             )}
+  //             {meeting.status === 'completed' && (
+  //               <DataTable.Row>
+  //                 <DataTable.Cell>Out Time</DataTable.Cell>
+  //                 <DataTable.Cell>
+  //                   {meeting.meetingEndTime
+  //                     ? moment(meeting.meetingEndTime).format(
+  //                         'DD-MMM-YYYY,  hh:mm a',
+  //                       )
+  //                     : '-'}
+  //                 </DataTable.Cell>
+  //               </DataTable.Row>
+  //             )}
+  //           </>
 
-                {meeting.status === 'upcoming' && (
-                  <Spacer position={'left'} size={'large'}>
-                    <Button
-                      theme={{roundness: 10}}
-                      mode="outlined"
-                      style={{height: 40, width: '100%'}}
-                      color="#33B996"
-                      icon="logout"
-                      onPress={() => onUpdateStatus('completed')}>
-                      <ButtonText color="#33B996">SIGN OUT </ButtonText>
-                    </Button>
-                  </Spacer>
-                )}
-              </ButtonsContainer>
-            </ActionsContainer>
-          </MainWrapper>
-        </ScrollView>
-      </SafeArea>
-    )
-  );
+  //           <ActionsContainer>
+  //             <Button
+  //               theme={{roundness: 10}}
+  //               mode="contained"
+  //               style={{height: 40}}
+  //               color={theme.colors.brand.primary}
+  //               icon="printer"
+  //               onPress={() => onUpdateStatus('accepted')}>
+  //               <ButtonText color="#fff">PRINT</ButtonText>
+  //             </Button>
+  //             <ButtonsContainer>
+  //               {meeting.status === 'upcoming' && (
+  //                 <Spacer position={'right'}>
+  //                   <Button
+  //                     theme={{roundness: 10}}
+  //                     mode="outlined"
+  //                     style={{height: 40, width: '100%'}}
+  //                     color="tomato"
+  //                     icon="close"
+  //                     onPress={() => setRejectedModalVisible(true)}>
+  //                     <ButtonText color="tomato">REJECT </ButtonText>
+  //                   </Button>
+  //                 </Spacer>
+  //               )}
+
+  //               {meeting.status === 'upcoming' && (
+  //                 <Spacer position={'left'} size={'large'}>
+  //                   <Button
+  //                     theme={{roundness: 10}}
+  //                     mode="outlined"
+  //                     style={{height: 40, width: '100%'}}
+  //                     color="#33B996"
+  //                     icon="logout"
+  //                     onPress={() => onUpdateStatus('completed')}>
+  //                     <ButtonText color="#33B996">SIGN OUT </ButtonText>
+  //                   </Button>
+  //                 </Spacer>
+  //               )}
+  //             </ButtonsContainer>
+  //           </ActionsContainer>
+  //         </MainWrapper>
+  //       </ScrollView>
+  //     </SafeArea>
+  //   )
+  // );
 };

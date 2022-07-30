@@ -57,18 +57,22 @@ export const DashboardScreen = ({navigation}) => {
     today: {
       name: 'Today',
       color: '#33B996',
+      shortName: 'Today',
     },
     thisWeek: {
       name: 'This Week',
       color: '#2fb0c7',
+      shortName: 'T-W',
     },
     thisMonth: {
       name: 'This Month',
       color: '#5756d5',
+      shortName: 'T-M',
     },
     thisYear: {
       name: 'This Year',
       color: '#007aff',
+      shortName: 'T-Y',
     },
   };
 
@@ -91,24 +95,30 @@ export const DashboardScreen = ({navigation}) => {
       let totRejMeet = result.totalRejectedMeetings;
       Object.keys(totMeet).map((key, index) => {
         let number = totMeet[key];
-        let dataset = {
-          y: number,
-          x: keyValues[key].name,
-        };
-        data.totalMeetingsDone.total += number;
-        data.totalMeetingsDone.colors.push(keyValues[key].color);
-        data.totalMeetingsDone.datasets.push(dataset);
+        if (number !== 0) {
+          let dataset = {
+            y: number,
+            x: keyValues[key].name,
+            shortName: keyValues[key].shortName,
+          };
+          data.totalMeetingsDone.total += number;
+          data.totalMeetingsDone.colors.push(keyValues[key].color);
+          data.totalMeetingsDone.datasets.push(dataset);
+        }
       });
 
       Object.keys(totRejMeet).map((key, index) => {
         let number = totRejMeet[key];
-        let dataset = {
-          y: number,
-          x: keyValues[key].name,
-        };
-        data.totalRejectedMeetings.total += number;
-        data.totalRejectedMeetings.colors.push(keyValues[key].color);
-        data.totalRejectedMeetings.datasets.push(dataset);
+        if (number !== 0) {
+          let dataset = {
+            y: number,
+            x: keyValues[key].name,
+            shortName: keyValues[key].shortName,
+          };
+          data.totalRejectedMeetings.total += number;
+          data.totalRejectedMeetings.colors.push(keyValues[key].color);
+          data.totalRejectedMeetings.datasets.push(dataset);
+        }
       });
     }
 
@@ -125,97 +135,102 @@ export const DashboardScreen = ({navigation}) => {
   }
 
   return (
-    <ScrollView>
-      {chartData && (
-        <MainWrapper>
-          {chartData.totalMeetingsDone && (
+    <SafeArea>
+      <MainWrapper>
+        <ScrollView>
+          {chartData && (
             <>
-              <Text
-                fontfamily="heading"
-                fontsize="20px"
-                style={{textAlign: 'center'}}>
-                Meetings Done
-              </Text>
-              <Spacer size={'large'} />
-              <VictoryPie
-                data={chartData.totalMeetingsDone.datasets}
-                width={Dimensions.get('window').width}
-                height={280}
-                innerRadius={50}
-                colorScale={chartData.totalMeetingsDone.colors}
-                style={{
-                  labels: {
-                    fill: theme.colors.text.primary,
-                    fontSize: 15,
-                    padding: 7,
-                  },
-                }}
-              />
+              {chartData.totalMeetingsDone && (
+                <>
+                  <Text
+                    fontfamily="heading"
+                    fontsize="20px"
+                    style={{textAlign: 'center'}}>
+                    Meetings Done
+                  </Text>
+                  <Spacer size={'large'} />
+                  <VictoryPie
+                    data={chartData.totalMeetingsDone.datasets}
+                    width={Dimensions.get('window').width}
+                    height={280}
+                    innerRadius={50}
+                    colorScale={chartData.totalMeetingsDone.colors}
+                    style={{
+                      labels: {
+                        fill: theme.colors.text.primary,
+                        fontSize: 15,
+                        padding: 7,
+                      },
+                    }}
+                  />
 
-              {Object.keys(chartData.totalMeetingsDone.datasets).map(
-                (key, index) => {
-                  let dataset = chartData.totalMeetingsDone.datasets[index];
-                  let color = chartData.totalMeetingsDone.colors[index];
-                  let total = chartData.totalMeetingsDone.total;
-                  let percentage = dataset.y / total;
-                  return (
-                    <ChartInfoCard
-                      key={index}
-                      percentage={percentage}
-                      color={color}
-                      name={dataset.x + ' ( ' + dataset.y + ' )'}
-                    />
-                  );
-                },
+                  {Object.keys(chartData.totalMeetingsDone.datasets).map(
+                    (key, index) => {
+                      let dataset = chartData.totalMeetingsDone.datasets[index];
+                      let color = chartData.totalMeetingsDone.colors[index];
+                      let total = chartData.totalMeetingsDone.total;
+                      let percentage = dataset.y / total;
+                      return (
+                        <ChartInfoCard
+                          key={index}
+                          percentage={percentage}
+                          color={color}
+                          name={dataset.x + ' ( ' + dataset.y + ' )'}
+                        />
+                      );
+                    },
+                  )}
+                </>
+              )}
+              <Divider />
+              <Spacer size={'large'} />
+              {chartData.totalRejectedMeetings && (
+                <>
+                  <Text
+                    fontfamily="heading"
+                    fontsize="20px"
+                    style={{textAlign: 'center'}}>
+                    Rejected Meetings
+                  </Text>
+                  <Spacer size={'large'} />
+                  <VictoryPie
+                    data={chartData.totalRejectedMeetings.datasets}
+                    width={Dimensions.get('window').width}
+                    height={280}
+                    innerRadius={50}
+                    colorScale={chartData.totalRejectedMeetings.colors}
+                    style={{
+                      labels: {
+                        fill: theme.colors.text.primary,
+                        fontSize: 15,
+                        padding: 7,
+                      },
+                    }}
+                  />
+
+                  {Object.keys(chartData.totalRejectedMeetings.datasets).map(
+                    (key, index) => {
+                      let dataset =
+                        chartData.totalRejectedMeetings.datasets[index];
+                      let color = chartData.totalRejectedMeetings.colors[index];
+                      let total = chartData.totalRejectedMeetings.total;
+                      let percentage = dataset.y / total;
+                      return (
+                        <ChartInfoCard
+                          key={index}
+                          percentage={percentage}
+                          color={color}
+                          name={dataset.x + ' ( ' + dataset.y + ' )'}
+                        />
+                      );
+                    },
+                  )}
+                </>
               )}
             </>
           )}
-          <Divider />
-          <Spacer size={'large'} />
-          {chartData.totalRejectedMeetings && (
-            <>
-              <Text
-                fontfamily="heading"
-                fontsize="20px"
-                style={{textAlign: 'center'}}>
-                Rejected Meetings
-              </Text>
-              <Spacer size={'large'} />
-              <VictoryPie
-                data={chartData.totalRejectedMeetings.datasets}
-                width={Dimensions.get('window').width}
-                height={280}
-                innerRadius={50}
-                colorScale={chartData.totalRejectedMeetings.colors}
-                style={{
-                  labels: {
-                    fill: theme.colors.text.primary,
-                    fontSize: 15,
-                    padding: 7,
-                  },
-                }}
-              />
-
-              {Object.keys(chartData.totalRejectedMeetings.datasets).map(
-                (key, index) => {
-                  let dataset = chartData.totalRejectedMeetings.datasets[index];
-                  let color = chartData.totalRejectedMeetings.colors[index];
-                  let total = chartData.totalRejectedMeetings.total;
-                  let percentage = dataset.y / total;
-                  return (
-                    <ChartInfoCard
-                      key={index}
-                      percentage={percentage}
-                      color={color}
-                      name={dataset.x + ' ( ' + dataset.y + ' )'}
-                    />
-                  );
-                },
-              )}
-            </>
-          )}
-        </MainWrapper>
-      )}
-    </ScrollView>
+        </ScrollView>
+      </MainWrapper>
+    </SafeArea>
   );
 };

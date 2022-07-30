@@ -7137,6 +7137,11 @@
   "resolved" "https://registry.npmjs.org/react-is/-/react-is-16.13.1.tgz"
   "version" "16.13.1"
 
+"react-native-bluetooth-escpos-printer@^0.0.5":
+  "integrity" "sha512-a+GTlz8dctb48wkoJ8woE7gV24NCOoA13J95A+RFEKhjONEWf3/dP5pIqrrlO5fsf/2QYDeMfU3P8bIVQoEqig=="
+  "resolved" "https://registry.npmjs.org/react-native-bluetooth-escpos-printer/-/react-native-bluetooth-escpos-printer-0.0.5.tgz"
+  "version" "0.0.5"
+
 "react-native-codegen@^0.69.1":
   "integrity" "sha512-TOZEqBarczcyYN3iZE3VpKkooOevaAzBq9n7lU0h9mQUvtRhLVyolc+a5K6cWI0e4v4K69I0MqzjPcPeFKo32Q=="
   "resolved" "https://registry.npmjs.org/react-native-codegen/-/react-native-codegen-0.69.1.tgz"
@@ -7238,7 +7243,7 @@
     "prop-types" "^15.7.2"
     "yargs" "^16.1.1"
 
-"react-native@*", "react-native@^0.0.0-0 || 0.60 - 0.69 || 1000.0.0", "react-native@>=0.42.0", "react-native@>=0.50.0", "react-native@>=0.57.0", "react-native@>=0.59", "react-native@>=0.60.0", "react-native@0.69.1":
+"react-native@*", "react-native@^0.0.0-0 || 0.60 - 0.69 || 1000.0.0", "react-native@>=0.42.0", "react-native@>=0.50.0", "react-native@>=0.55.4", "react-native@>=0.57.0", "react-native@>=0.59", "react-native@>=0.60.0", "react-native@0.69.1":
   "integrity" "sha512-585NmzSuYUfday8YsfqgreFAZbXRI/kxKsiuaShwGHgkwdtmE5qA7WfGItgxZBOZD6g/Hm1YBUqSwIm07tPa6A=="
   "resolved" "https://registry.npmjs.org/react-native/-/react-native-0.69.1.tgz"
   "version" "0.69.1"
